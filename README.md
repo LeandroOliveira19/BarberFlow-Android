@@ -21,7 +21,7 @@ Fala com a API JSON do backend PHP (`api/v1` no repositório web, branch `api-v1
 |---|---|---|
 | `local` | `http://10.0.2.2:8080/projeto/projeto/api/v1/` | 10.0.2.2 = o PC visto pelo emulador. Mostra o código de dev. |
 | `usb` | `http://127.0.0.1:8080/projeto/projeto/api/v1/` | Telemóvel por cabo: `adb reverse tcp:8080 tcp:8080`. Mostra o código de dev. |
-| `ua` | `https://esan-tesp-ds-paw.web.ua.pt/tesp-ds-g9/projeto/api/v1/` | Versão para partilhar (`apk\BarberFlow.apk`). Precisa da API publicada na UA (`deploy-ua\LER-PRIMEIRO.md`). Email real. |
+| `ua` | `https://esan-tesp-ds-paw.web.ua.pt/tesp-ds-g9/projeto/api/v1/` | Versão para partilhar (`apk\RLBarber.apk`), já fixa na RL Barber (`SLUG_FIXO`). Precisa da API publicada na UA (`deploy-ua\LER-PRIMEIRO.md`). Se o email não sair, o código aparece no ecrã (`api_codigo_se_email_falhar`). |
 
 Para dar a app a outras pessoas, ver [COMO-INSTALAR-A-APP.md](COMO-INSTALAR-A-APP.md).
 
