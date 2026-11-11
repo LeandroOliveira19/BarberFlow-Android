@@ -8,7 +8,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import barberflow.cliente.BuildConfig
 import barberflow.cliente.R
 import barberflow.cliente.dados.Repositorio
 import barberflow.cliente.dados.Resultado
@@ -93,7 +92,8 @@ class DadosClienteFragment : Fragment(R.layout.fragment_dados_cliente) {
                         R.id.action_dados_para_verificar,
                         bundleOf(
                             "marcacao_id" to r.dados.marcacaoId,
-                            "codigo_dev" to if (BuildConfig.MOSTRAR_CODIGO_DEV) r.dados.codigoDev else null,
+                            // o servidor só envia o código em desenvolvimento ou se o email não pôde ser enviado
+                            "codigo_dev" to r.dados.codigoDev,
                             "email_enviado" to r.dados.emailEnviado,
                         ),
                     )

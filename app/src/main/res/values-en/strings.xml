@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">BarberFlow</string>
 
     <string name="nav_inicio">Home</string>
     <string name="nav_servicos">Services</string>
@@ -70,7 +69,7 @@
     <string name="verificar_reenviado">We sent a new code.</string>
     <string name="verificar_expira_em">The code expires in %1$s</string>
     <string name="verificar_expirou">The code expired. Make a new booking.</string>
-    <string name="verificar_codigo_dev">Code (development mode): %1$s</string>
+    <string name="verificar_codigo_dev">Your confirmation code: %1$s</string>
     <string name="verificar_codigo_incompleto">The code has 6 digits.</string>
     <string name="verificar_restam">%1$s %2$d attempts left.</string>
     <string name="verificar_sucesso">Booking confirmed!</string>

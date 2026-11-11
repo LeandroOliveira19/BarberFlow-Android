@@ -77,7 +77,7 @@
     <string name="verificar_reenviado">Enviámos um novo código.</string>
     <string name="verificar_expira_em">O código expira em %1$s</string>
     <string name="verificar_expirou">O código expirou. Faz uma nova marcação.</string>
-    <string name="verificar_codigo_dev">Código (modo desenvolvimento): %1$s</string>
+    <string name="verificar_codigo_dev">O teu código de confirmação: %1$s</string>
     <string name="verificar_codigo_incompleto">O código tem 6 dígitos.</string>
     <string name="verificar_restam">%1$s Restam %2$d tentativas.</string>
     <string name="verificar_sucesso">Marcação confirmada!</string>

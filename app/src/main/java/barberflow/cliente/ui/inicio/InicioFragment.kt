@@ -15,6 +15,8 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.appcompat.app.AppCompatActivity
+import barberflow.cliente.BuildConfig
 import barberflow.cliente.R
 import barberflow.cliente.dados.Repositorio
 import barberflow.cliente.dados.Resultado
@@ -43,6 +45,8 @@ class InicioFragment : Fragment(R.layout.fragment_inicio) {
         b.listaReviews.layoutManager = LinearLayoutManager(requireContext())
         b.nomeBarbearia.text = prefs.barbeariaNome
         configurarSpinnerLembrete()
+        // Num APK próprio de uma barbearia não faz sentido mudar de barbearia
+        b.botaoMudarBarbearia.isVisible = BuildConfig.SLUG_FIXO.isBlank()
         b.botaoMudarBarbearia.setOnClickListener { mudarBarbearia() }
         b.botaoAtivarNotificacoes.setOnClickListener { ativarNotificacoes() }
         atualizarSaudacao()
@@ -81,6 +85,8 @@ class InicioFragment : Fragment(R.layout.fragment_inicio) {
 
     private fun mostrarBarbearia(d: BarbeariaDto) {
         if (_b == null) return
+        prefs.barbeariaNome = d.nome
+        (activity as? AppCompatActivity)?.supportActionBar?.title = d.nome
         b.nomeBarbearia.text = d.nome
         b.morada.text = d.morada.orEmpty()
         b.morada.isVisible = !d.morada.isNullOrBlank()

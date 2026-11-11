@@ -14,7 +14,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import barberflow.cliente.BuildConfig
 import barberflow.cliente.R
 import barberflow.cliente.dados.Repositorio
 import barberflow.cliente.dados.Resultado
@@ -100,7 +99,8 @@ class VerificarFragment : Fragment(R.layout.fragment_verificar) {
     }
 
     private fun mostrarCodigoDev(codigo: String?) {
-        b.codigoDev.isVisible = BuildConfig.MOSTRAR_CODIGO_DEV && codigo != null
+        // A política está no servidor: só envia o código em desenvolvimento ou quando o email falhou
+        b.codigoDev.isVisible = codigo != null
         b.codigoDev.text = getString(R.string.verificar_codigo_dev, codigo.orEmpty())
     }
 

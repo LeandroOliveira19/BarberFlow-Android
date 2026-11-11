@@ -16,6 +16,8 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        // Vazio = app genérica (pergunta a barbearia). Um APK próprio de uma barbearia define o slug.
+        buildConfigField("String", "SLUG_FIXO", "\"\"")
     }
 
     // Dois ambientes: XAMPP/php -S local (emulador → 10.0.2.2) e o servidor da UA
@@ -26,7 +28,6 @@ android {
             applicationIdSuffix = ".local"
             versionNameSuffix = "-local"
             buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8080/projeto/projeto/api/v1/\"")
-            buildConfigField("boolean", "MOSTRAR_CODIGO_DEV", "true")
         }
         // Telemóvel ligado por cabo: "adb reverse tcp:8080 tcp:8080" faz o 127.0.0.1:8080 do telemóvel
         // chegar ao PC pelo cabo USB (sem Wi-Fi nem firewall). Usa o mesmo network_security_config do local.
@@ -35,12 +36,12 @@ android {
             applicationIdSuffix = ".usb"
             versionNameSuffix = "-usb"
             buildConfigField("String", "BASE_URL", "\"http://127.0.0.1:8080/projeto/projeto/api/v1/\"")
-            buildConfigField("boolean", "MOSTRAR_CODIGO_DEV", "true")
         }
+        // APK para partilhar: servidor da UA e já fixo na RL Barber (abre direto, sem perguntar a barbearia)
         create("ua") {
             dimension = "ambiente"
+            buildConfigField("String", "SLUG_FIXO", "\"rlbarber\"")
             buildConfigField("String", "BASE_URL", "\"https://esan-tesp-ds-paw.web.ua.pt/tesp-ds-g9/projeto/api/v1/\"")
-            buildConfigField("boolean", "MOSTRAR_CODIGO_DEV", "false")
         }
     }
 

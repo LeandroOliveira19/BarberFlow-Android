@@ -6,7 +6,9 @@ import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import barberflow.cliente.BuildConfig
 import barberflow.cliente.R
+import barberflow.cliente.dados.slugEfetivo
 import barberflow.cliente.dados.Repositorio
 import barberflow.cliente.dados.Resultado
 import barberflow.cliente.databinding.ActivityOnboardingBinding
@@ -22,6 +24,17 @@ class OnboardingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Repositorio.iniciar(this)
+
+        // APK próprio de uma barbearia (ex.: RLBarber): não pergunta nada, entra logo
+        val fixo = slugEfetivo(BuildConfig.SLUG_FIXO, null)
+        if (fixo != null) {
+            if (Repositorio.prefs.slug != fixo) {
+                Repositorio.prefs.slug = fixo
+                Repositorio.prefs.barbeariaNome = getString(R.string.app_name)
+            }
+            abrirMain()
+            return
+        }
 
         val slugLink = slugDoLink(intent)
         if (slugLink == null && Repositorio.prefs.slug != null) {
