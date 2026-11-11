@@ -1,0 +1,80 @@
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.ksp)
+}
+
+android {
+    namespace = "barberflow.cliente"
+    compileSdk {
+        version = release(37)
+    }
+
+    defaultConfig {
+        applicationId = "barberflow.cliente"
+        minSdk = 26
+        targetSdk = 35
+        versionCode = 1
+        versionName = "1.0"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    // Dois ambientes: XAMPP/php -S local (emulador → 10.0.2.2) e o servidor da UA
+    flavorDimensions += "ambiente"
+    productFlavors {
+        create("local") {
+            dimension = "ambiente"
+            applicationIdSuffix = ".local"
+            versionNameSuffix = "-local"
+            buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8080/projeto/projeto/api/v1/\"")
+            buildConfigField("boolean", "MOSTRAR_CODIGO_DEV", "true")
+        }
+        create("ua") {
+            dimension = "ambiente"
+            buildConfigField("String", "BASE_URL", "\"https://esan-tesp-ds-paw.web.ua.pt/tesp-ds-g9/api/v1/\"")
+            buildConfigField("boolean", "MOSTRAR_CODIGO_DEV", "false")
+        }
+    }
+
+    buildTypes {
+        release {
+            optimization {
+                enable = false
+            }
+        }
+    }
+
+    buildFeatures {
+        viewBinding = true
+        buildConfig = true
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+    implementation(libs.glide)
+
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.room.testing)
+}

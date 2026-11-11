@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Tema "clássico" do site BarberFlow -->
+    <color name="bf_fundo">#0A0A0A</color>
+    <color name="bf_superficie">#161616</color>
+    <color name="bf_superficie_alta">#202020</color>
+    <color name="bf_dourado">#CDA47C</color>
+    <color name="bf_dourado_escuro">#8F6E4E</color>
+    <color name="bf_texto">#F5F5F5</color>
+    <color name="bf_texto_secundario">#A3A3A3</color>
+    <color name="bf_contorno">#2E2E2E</color>
+    <color name="bf_erro">#F87171</color>
+    <color name="bf_sucesso">#4ADE80</color>
+    <color name="bf_aviso">#FBBF24</color>
+    <color name="bf_info">#60A5FA</color>
+    <color name="bf_preto">#000000</color>
+</resources>
