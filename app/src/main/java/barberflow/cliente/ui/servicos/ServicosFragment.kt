@@ -4,11 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
+import barberflow.cliente.ui.MainActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import barberflow.cliente.R
@@ -46,8 +45,9 @@ class ServicosFragment : Fragment(R.layout.fragment_lista) {
                     b.vazio.setText(R.string.servicos_vazio)
                     b.vazio.isVisible = r.dados.isEmpty()
                     b.lista.adapter = ServicosAdapter(r.dados) { s ->
-                        // Tocar num serviço abre o Marcar com esse serviço já escolhido
-                        findNavController().navigate(R.id.marcarFragment, bundleOf("servico_id" to s.id))
+                        // Tocar num serviço abre o tab Marcar com esse serviço já escolhido
+                        Repositorio.preSelecaoServico = s.id
+                        (activity as? MainActivity)?.irPara(R.id.marcarFragment)
                     }
                     b.lista.aparecer()
                 }

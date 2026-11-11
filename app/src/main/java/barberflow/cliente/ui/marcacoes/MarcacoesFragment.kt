@@ -107,7 +107,8 @@ class MarcacoesFragment : Fragment(R.layout.fragment_marcacoes) {
 
     private fun terminarSessao() {
         val ctx = requireContext().applicationContext
-        viewLifecycleOwner.lifecycleScope.launch {
+        // No scope da app: mudar de tab a meio não deixa a sessão meio terminada
+        Repositorio.escopo.launch {
             Agendador.aoTerminarSessao(ctx)
             Repositorio.dao.apagarTodas()
             prefs.limparCliente()

@@ -17,7 +17,11 @@ import barberflow.cliente.dados.api.dto.VerificacaoResposta
 import barberflow.cliente.dados.local.BaseDados
 import barberflow.cliente.dados.local.MarcacaoDao
 import barberflow.cliente.dados.local.MarcacaoLocal
+import barberflow.cliente.tarefas.Lembretes
 import barberflow.cliente.tarefas.agoraApi
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 
 /**
  * Ponto único de acesso a dados: junta a API (Retrofit), o Room e as SharedPreferences.
@@ -28,6 +32,16 @@ object Repositorio {
     private val api: ApiServico get() = ApiCliente.servico
     lateinit var prefs: Preferencias private set
     lateinit var dao: MarcacaoDao private set
+
+    /**
+     * Scope da app para pedidos que MUDAM dados no servidor (criar/verificar marcação, terminar sessão):
+     * rodar o ecrã ou mudar de tab não os cancela a meio, e o resultado é guardado antes de tocar na UI.
+     */
+    val escopo = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+
+    /** Pré-seleção para o tab Marcar quando se vem de Serviços ou do detalhe de um barbeiro. */
+    var preSelecaoServico: Int? = null
+    var preSelecaoBarbeiro: Int? = null
 
     fun iniciar(ctx: Context) {
         if (::app.isInitialized) return
@@ -88,6 +102,8 @@ object Repositorio {
                     val remoto = porId[l.id] ?: continue
                     if (remoto.estado != l.estado) {
                         dao.atualizarEstado(l.id, remoto.estado)
+                        // Revisão #5: quem atualiza o estado também cancela o lembrete (pull-to-refresh ou worker)
+                        if (lembreteDeveSerCancelado(remoto.estado)) Lembretes.cancelarLembrete(app, l.id)
                         mudadas += l.copy(estado = remoto.estado)
                     }
                 }

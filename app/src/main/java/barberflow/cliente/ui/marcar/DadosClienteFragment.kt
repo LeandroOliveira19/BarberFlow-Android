@@ -17,7 +17,9 @@ import barberflow.cliente.dados.local.MarcacaoLocal
 import barberflow.cliente.databinding.FragmentDadosClienteBinding
 import barberflow.cliente.tarefas.Agendador
 import barberflow.cliente.ui.mostrarErro
+import barberflow.cliente.ui.quandoVisivel
 import com.google.gson.Gson
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
@@ -59,26 +61,35 @@ class DadosClienteFragment : Fragment(R.layout.fragment_dados_cliente) {
 
         val a = requireArguments()
         val slug = prefs.slug ?: return
+        val ctx = requireContext().applicationContext
         val pedido = NovaMarcacaoPedido(
             a.getInt("servico_id"), a.getInt("barbeiro_id"), a.getString("data")!!, a.getString("hora")!!, nome, tel, email,
         )
         aCarregar(true)
-        viewLifecycleOwner.lifecycleScope.launch {
+
+        // Revisão #1: o POST corre no scope da app e o resultado é guardado ANTES de tocar na UI.
+        // Rodar o ecrã ou sair da app a meio já não deixa uma marcação "órfã" no servidor.
+        val pedidoJob = Repositorio.escopo.async {
             val r = Repositorio.criarMarcacao(slug, pedido)
-            if (_b == null) return@launch
-            aCarregar(false)
-            when (r) {
-                is Resultado.Ok -> {
-                    prefs.clienteNome = nome
-                    prefs.clienteTelemovel = tel
-                    prefs.clienteEmail = email
-                    // A marcação pendente fica nas prefs: sobrevive a rodar o ecrã ou a app ser morta
-                    prefs.pendenteMarcacaoId = r.dados.marcacaoId
-                    prefs.pendenteCodigoExpiraEm = r.dados.codigoExpiraEm
-                    prefs.pendenteToken = r.dados.tokenPendente
-                    prefs.pendenteResumo = Gson().toJson(resumo(r.dados.marcacaoId, slug))
-                    Agendador.aoCriar(requireContext(), r.dados.marcacaoId, r.dados.codigoExpiraEm)
-                    findNavController().navigate(
+            if (r is Resultado.Ok) {
+                prefs.clienteNome = nome
+                prefs.clienteTelemovel = tel
+                prefs.clienteEmail = email
+                prefs.pendenteMarcacaoId = r.dados.marcacaoId
+                prefs.pendenteCodigoExpiraEm = r.dados.codigoExpiraEm
+                prefs.pendenteToken = r.dados.tokenPendente
+                prefs.pendenteResumo = Gson().toJson(resumo(a, r.dados.marcacaoId, slug))
+                Agendador.aoCriar(ctx, r.dados.marcacaoId, r.dados.codigoExpiraEm)
+            }
+            r
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            val r = pedidoJob.await()
+            if (_b != null) aCarregar(false)
+            quandoVisivel {
+                when (r) {
+                    is Resultado.Ok -> findNavController().navigate(
                         R.id.action_dados_para_verificar,
                         bundleOf(
                             "marcacao_id" to r.dados.marcacaoId,
@@ -86,21 +97,20 @@ class DadosClienteFragment : Fragment(R.layout.fragment_dados_cliente) {
                             "email_enviado" to r.dados.emailEnviado,
                         ),
                     )
-                }
-                is Resultado.Erro -> if (r.codigo == "slot_ocupado") {
-                    // Volta ao passo anterior, que recarrega os horários
-                    Toast.makeText(requireContext(), R.string.slot_ocupado_recarregado, Toast.LENGTH_LONG).show()
-                    findNavController().popBackStack()
-                } else {
-                    mostrarErro(r.mensagem)
+                    is Resultado.Erro -> if (r.codigo == "slot_ocupado") {
+                        // Volta ao passo anterior, que recarrega os horários
+                        Toast.makeText(requireContext(), R.string.slot_ocupado_recarregado, Toast.LENGTH_LONG).show()
+                        findNavController().popBackStack()
+                    } else {
+                        mostrarErro(r.mensagem)
+                    }
                 }
             }
         }
     }
 
     /** Resumo guardado até à confirmação (o token final só chega depois de verificar o código). */
-    private fun resumo(id: Int, slug: String): MarcacaoLocal {
-        val a = requireArguments()
+    private fun resumo(a: Bundle, id: Int, slug: String): MarcacaoLocal {
         val inicio = LocalDate.parse(a.getString("data")).atTime(LocalTime.parse(a.getString("hora")))
         val fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         return MarcacaoLocal(

@@ -26,9 +26,7 @@ class SincronizarWorker(ctx: Context, params: WorkerParameters) : CoroutineWorke
             is Resultado.Erro -> Result.retry()
             is Resultado.Ok -> {
                 for (m in r.dados) {
-                    if (m.estado == "cancelada" || m.estado == "concluida" || m.estado == "expirada") {
-                        Lembretes.cancelarLembrete(applicationContext, m.id)
-                    }
+                    // os lembretes já foram cancelados dentro de Repositorio.sincronizar()
                     if (m.estado == "cancelada") {
                         Notificacoes.mostrar(
                             applicationContext, 800_000 + m.id,

@@ -18,7 +18,7 @@ import barberflow.cliente.BuildConfig
 import barberflow.cliente.R
 import barberflow.cliente.dados.Repositorio
 import barberflow.cliente.dados.Resultado
-import barberflow.cliente.dados.local.MarcacaoLocal
+import barberflow.cliente.dados.resumoConfirmado
 import barberflow.cliente.databinding.FragmentVerificarBinding
 import barberflow.cliente.tarefas.Agendador
 import barberflow.cliente.tarefas.Eventos
@@ -28,8 +28,10 @@ import barberflow.cliente.tarefas.paraEpochMillis
 import barberflow.cliente.ui.MainActivity
 import barberflow.cliente.ui.abrir
 import barberflow.cliente.ui.mostrarErro
+import barberflow.cliente.ui.quandoVisivel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.gson.Gson
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /** Passo 3: o cliente escreve o código recebido por email; a API devolve o token da marcação. */
@@ -47,10 +49,10 @@ class VerificarFragment : Fragment(R.layout.fragment_verificar) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         _b = FragmentVerificarBinding.bind(view)
         // Review Focus 2: se o ecrã rodar ou a app for morta, a marcação vem das prefs e não só dos argumentos
-        marcacaoId = arguments?.getInt("marcacao_id", -1)?.takeIf { it != -1 } ?: prefs.pendenteMarcacaoId
+        val doArgumento = arguments?.getInt("marcacao_id", -1) ?: -1
+        marcacaoId = doArgumento.takeIf { it != -1 } ?: prefs.pendenteMarcacaoId
         if (marcacaoId == -1 || prefs.pendenteMarcacaoId != marcacaoId || prefs.pendenteToken == null) {
-            mostrarErro(getString(R.string.verificar_sem_pendente))
-            voltarAoMarcar()
+            semPendente(doArgumento)
             return
         }
 
@@ -64,6 +66,19 @@ class VerificarFragment : Fragment(R.layout.fragment_verificar) {
         b.botaoReenviar.setOnClickListener { reenviar() }
         b.botaoAbrirEmail.setOnClickListener {
             requireContext().abrir(Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_EMAIL).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        }
+    }
+
+    /** Já não há pendente: se a marcação deste ecrã ficou confirmada (ex.: rodou durante o ✓), vai para Marcações. */
+    private fun semPendente(id: Int) {
+        b.conteudo.isVisible = false
+        viewLifecycleOwner.lifecycleScope.launch {
+            val confirmada = id != -1 && Repositorio.dao.obter(id)?.estado == "confirmada"
+            if (confirmada) irParaMarcacoes()
+            else {
+                mostrarErro(getString(R.string.verificar_sem_pendente))
+                voltarAoMarcar()
+            }
         }
     }
 
@@ -109,22 +124,42 @@ class VerificarFragment : Fragment(R.layout.fragment_verificar) {
         if (codigo.length != 6) { b.campoCodigo.error = getString(R.string.verificar_codigo_incompleto); return }
         b.campoCodigo.error = null
         val token = prefs.pendenteToken ?: return voltarAoMarcar()
+        // Revisão #2: o resumo é copiado ANTES do pedido (o alarme de expiração pode apagá-lo entretanto)
+        val resumoJson = prefs.pendenteResumo ?: return voltarAoMarcar()
+        val ctx = requireContext().applicationContext
+        val id = marcacaoId
         aCarregar(true)
+
+        // Revisão #1: verificar + guardar correm no scope da app; rodar o ecrã já não perde a confirmação
+        val job = Repositorio.escopo.async {
+            val r = Repositorio.verificar(id, codigo, token)
+            when {
+                r is Resultado.Ok -> resumoConfirmado(resumoJson, r.dados.token)?.let { m ->
+                    Repositorio.guardarConfirmada(m)
+                    prefs.sessaoAtiva = true
+                    prefs.limparPendente()
+                    Agendador.aoConfirmar(ctx, m)
+                    Eventos.emitir(ctx, Eventos.MARCACAO)
+                    Eventos.emitir(ctx, Eventos.SESSAO)
+                }
+                r is Resultado.Erro && r.codigo in TERMINAIS -> {
+                    Lembretes.cancelarExpiracao(ctx)
+                    prefs.limparPendente()
+                }
+            }
+            r
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
-            val r = Repositorio.verificar(marcacaoId, codigo, token)
+            val r = job.await()
             if (_b == null) return@launch
             aCarregar(false)
             when (r) {
-                is Resultado.Ok -> confirmada(r.dados.token)
+                is Resultado.Ok -> { contador?.cancel(); animarSucesso() }
                 is Resultado.Erro -> when (r.codigo) {
                     "codigo_errado" -> b.campoCodigo.error =
                         getString(R.string.verificar_restam, r.mensagem, r.tentativasRestantes ?: 0)
-                    "expirada", "token_invalido", "ja_confirmada" -> {
-                        mostrarErro(r.mensagem)
-                        Lembretes.cancelarExpiracao(requireContext())
-                        prefs.limparPendente()
-                        voltarAoMarcar()
-                    }
+                    in TERMINAIS -> { mostrarErro(r.mensagem); voltarAoMarcar() }
                     else -> b.campoCodigo.error = r.mensagem
                 }
             }
@@ -151,21 +186,8 @@ class VerificarFragment : Fragment(R.layout.fragment_verificar) {
         }
     }
 
-    private suspend fun confirmada(token: String) {
-        contador?.cancel()
-        val resumo = Gson().fromJson(prefs.pendenteResumo, MarcacaoLocal::class.java)
-        val m = resumo.copy(token = token, estado = "confirmada")
-        Repositorio.guardarConfirmada(m)
-        prefs.sessaoAtiva = true
-        prefs.limparPendente()
-        Agendador.aoConfirmar(requireContext(), m)
-        Eventos.emitir(requireContext(), Eventos.MARCACAO)
-        Eventos.emitir(requireContext(), Eventos.SESSAO)
-        animarSucesso { pedirPermissaoOuSeguir() }
-    }
-
-    /** AnimatorSet: o ✓ aparece com fade + escala. */
-    private fun animarSucesso(depois: () -> Unit) {
+    /** AnimatorSet: o ✓ aparece com fade + escala; depois segue (só se o ecrã estiver visível). */
+    private fun animarSucesso() {
         b.sucesso.alpha = 0f
         b.sucesso.isVisible = true
         b.iconeSucesso.scaleX = 0.3f
@@ -179,7 +201,10 @@ class VerificarFragment : Fragment(R.layout.fragment_verificar) {
             duration = 450
             start()
         }
-        b.sucesso.postDelayed({ if (_b != null) depois() }, 1200)
+        viewLifecycleOwner.lifecycleScope.launch {
+            delay(1200)
+            quandoVisivel { pedirPermissaoOuSeguir() }
+        }
     }
 
     private fun pedirPermissaoOuSeguir() {
@@ -198,14 +223,13 @@ class VerificarFragment : Fragment(R.layout.fragment_verificar) {
         }
     }
 
-    private fun irParaMarcacoes() {
-        if (_b == null) return
+    private fun irParaMarcacoes() = quandoVisivel {
         findNavController().popBackStack(R.id.marcarFragment, false)
         (activity as? MainActivity)?.irPara(R.id.marcacoesFragment)
     }
 
-    private fun voltarAoMarcar() {
-        view?.post { if (isAdded) findNavController().popBackStack(R.id.marcarFragment, false) }
+    private fun voltarAoMarcar() = quandoVisivel {
+        findNavController().popBackStack(R.id.marcarFragment, false)
     }
 
     private fun aCarregar(sim: Boolean) {
@@ -218,5 +242,10 @@ class VerificarFragment : Fragment(R.layout.fragment_verificar) {
         contador?.cancel()
         _b = null
         super.onDestroyView()
+    }
+
+    private companion object {
+        /** Erros depois dos quais a marcação pendente deixa de existir. */
+        val TERMINAIS = setOf("expirada", "token_invalido", "ja_confirmada")
     }
 }

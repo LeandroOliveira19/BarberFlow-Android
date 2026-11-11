@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import barberflow.cliente.R
 import barberflow.cliente.dados.Repositorio
+import barberflow.cliente.dados.lembreteDeveSerCancelado
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -17,12 +18,24 @@ class LembreteReceiver : BroadcastReceiver() {
         val id = i.getIntExtra(Lembretes.EXTRA_ID, 0)
         val minutos = i.getIntExtra(Lembretes.EXTRA_MINUTOS, 60)
         val inicio = i.getStringExtra(Lembretes.EXTRA_INICIO) ?: return
-        Notificacoes.mostrar(
-            ctx, id,
-            ctx.getString(R.string.notif_lembrete_titulo, minutos),
-            ctx.getString(R.string.notif_lembrete_texto, i.getStringExtra(Lembretes.EXTRA_SERVICO), i.getStringExtra(Lembretes.EXTRA_BARBEIRO), horaCurta(inicio)),
-            R.id.marcacoesFragment,
-        )
+        Repositorio.iniciar(ctx)
+        val fim = goAsync()
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                // Revisão #5: se entretanto a marcação foi cancelada/concluída, não lembrar
+                val estado = Repositorio.dao.obter(id)?.estado
+                if (estado != null && !lembreteDeveSerCancelado(estado)) {
+                    Notificacoes.mostrar(
+                        ctx, id,
+                        ctx.getString(R.string.notif_lembrete_titulo, minutos),
+                        ctx.getString(R.string.notif_lembrete_texto, i.getStringExtra(Lembretes.EXTRA_SERVICO), i.getStringExtra(Lembretes.EXTRA_BARBEIRO), horaCurta(inicio)),
+                        R.id.marcacoesFragment,
+                    )
+                }
+            } finally {
+                fim.finish()
+            }
+        }
     }
 }
 

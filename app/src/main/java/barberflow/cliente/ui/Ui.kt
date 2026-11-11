@@ -7,8 +7,13 @@ import android.view.View
 import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.withStarted
 import barberflow.cliente.R
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 
 /** Abre um Intent implícito; se não houver app que o trate, avisa em vez de rebentar. */
 fun Context.abrir(intent: Intent) {
@@ -19,12 +24,28 @@ fun Context.abrir(intent: Intent) {
     }
 }
 
-/** Snackbar de erro, com botão "Tentar de novo" opcional. */
+/**
+ * Snackbar de erro, com botão "Tentar de novo" opcional.
+ * Revisão #3: o Snackbar desaparece com a view do Fragment e a ação nunca corre depois disso.
+ */
 fun Fragment.mostrarErro(mensagem: String, tentar: (() -> Unit)? = null) {
     val v = view ?: return
     val s = Snackbar.make(v, mensagem, if (tentar != null) Snackbar.LENGTH_INDEFINITE else Snackbar.LENGTH_LONG)
-    if (tentar != null) s.setAction(R.string.tentar_de_novo) { tentar() }
+    if (tentar != null) s.setAction(R.string.tentar_de_novo) { if (view != null) tentar() }
+    viewLifecycleOwner.lifecycle.addObserver(LifecycleEventObserver { _, e ->
+        if (e == Lifecycle.Event.ON_DESTROY) s.dismiss()
+    })
     s.show()
+}
+
+/**
+ * Corre `bloco` (navegação, diálogos) só quando o Fragment está visível (STARTED).
+ * Revisão (crítico): navegar depois de onStop lança IllegalStateException; aqui espera-se pelo regresso
+ * e, se a view for destruída entretanto, não se faz nada.
+ */
+fun Fragment.quandoVisivel(bloco: () -> Unit) {
+    if (view == null) return
+    viewLifecycleOwner.lifecycleScope.launch { viewLifecycleOwner.withStarted { bloco() } }
 }
 
 /** Fade-in de uma lista quando os dados chegam. */

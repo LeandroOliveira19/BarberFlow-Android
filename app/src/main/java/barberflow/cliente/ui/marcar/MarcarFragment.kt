@@ -29,6 +29,9 @@ import barberflow.cliente.ui.equipa.carregarFoto
 import barberflow.cliente.ui.formatarDuracao
 import barberflow.cliente.ui.formatarPreco
 import barberflow.cliente.ui.mostrarErro
+import barberflow.cliente.tarefas.paraEpochMillis
+import barberflow.cliente.ui.quandoVisivel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -48,6 +51,8 @@ class MarcarFragment : Fragment(R.layout.fragment_marcar) {
     private var barbeiros: List<BarbeiroDto> = emptyList()
     private var dia: LocalDate? = null
     private var hora: String? = null
+    private var slotsJob: Job? = null
+    private var chaveCarregada: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,7 +73,23 @@ class MarcarFragment : Fragment(R.layout.fragment_marcar) {
         b.listaSlots.layoutManager = GridLayoutManager(requireContext(), resources.getInteger(R.integer.colunas_slots))
         b.botaoDia.setOnClickListener { escolherDia() }
         b.botaoContinuar.setOnClickListener { continuar() }
+        chaveCarregada = null
+        if (retomarPendente()) return
         carregar()
+    }
+
+    /**
+     * Se há uma marcação criada mas ainda por confirmar (ex.: a app foi fechada a meio), volta ao ecrã do código.
+     * Devolve true se navegou.
+     */
+    private fun retomarPendente(): Boolean {
+        val p = Repositorio.prefs
+        val id = p.pendenteMarcacaoId
+        val expira = p.pendenteCodigoExpiraEm
+        if (id == -1 || p.pendenteToken == null || expira == null) return false
+        if (paraEpochMillis(expira) <= System.currentTimeMillis()) { p.limparPendente(); return false }
+        quandoVisivel { findNavController().navigate(R.id.verificarFragment, bundleOf("marcacao_id" to id)) }
+        return true
     }
 
     private fun carregar() {
@@ -100,15 +121,19 @@ class MarcarFragment : Fragment(R.layout.fragment_marcar) {
         )
         b.spinnerBarbeiro.adapter = ArrayAdapter(ctx, android.R.layout.simple_spinner_dropdown_item, barbeiros.map { it.nome })
 
-        // Pré-seleção vinda de Serviços ou do detalhe do barbeiro
-        val args = arguments
-        servicos.indexOfFirst { it.id == args?.getInt("servico_id", -1) }.takeIf { it >= 0 }?.let { b.spinnerServico.setSelection(it) }
-        barbeiros.indexOfFirst { it.id == args?.getInt("barbeiro_id", -1) }.takeIf { it >= 0 }?.let { b.spinnerBarbeiro.setSelection(it) }
+        // Pré-seleção vinda de Serviços ou do detalhe do barbeiro (revisão #4: chega pelo tab, não por argumentos)
+        val svPre = Repositorio.preSelecaoServico ?: arguments?.getInt("servico_id", -1)
+        val bbPre = Repositorio.preSelecaoBarbeiro ?: arguments?.getInt("barbeiro_id", -1)
+        Repositorio.preSelecaoServico = null
+        Repositorio.preSelecaoBarbeiro = null
+        servicos.indexOfFirst { it.id == svPre }.takeIf { it >= 0 }?.let { b.spinnerServico.setSelection(it) }
+        barbeiros.indexOfFirst { it.id == bbPre }.takeIf { it >= 0 }?.let { b.spinnerBarbeiro.setSelection(it) }
 
         val aoMudar = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p: AdapterView<*>?, v: View?, pos: Int, id: Long) {
                 if (p === b.spinnerBarbeiro) carregarFoto(b.fotoBarbeiro, barbeiros.getOrNull(pos)?.fotoUrl)
-                if (dia != null) carregarSlots()
+                // Revisão #6: o Spinner também dispara no primeiro layout — só recarrega se a escolha mudou
+                if (dia != null && chaveAtual() != chaveCarregada) carregarSlots()
             }
             override fun onNothingSelected(p: AdapterView<*>?) = Unit
         }
@@ -143,16 +168,25 @@ class MarcarFragment : Fragment(R.layout.fragment_marcar) {
             .replaceFirstChar { it.uppercase() }
     }
 
+    /** Identifica o pedido de horários (serviço, barbeiro, dia) para não repetir nem misturar respostas. */
+    private fun chaveAtual(): String? {
+        val s = servicos.getOrNull(b.spinnerServico.selectedItemPosition) ?: return null
+        val x = barbeiros.getOrNull(b.spinnerBarbeiro.selectedItemPosition) ?: return null
+        return "${s.id}|${x.id}|${dia ?: return null}"
+    }
+
     private fun carregarSlots() {
         val slug = Repositorio.prefs.slug ?: return
         val s = servicos.getOrNull(b.spinnerServico.selectedItemPosition) ?: return
         val x = barbeiros.getOrNull(b.spinnerBarbeiro.selectedItemPosition) ?: return
         val d = dia ?: return
+        chaveCarregada = chaveAtual()
+        slotsJob?.cancel()   // revisão #6: só a resposta do último pedido conta
         b.progresso.isVisible = true
         b.listaSlots.adapter = null
         b.semHorarios.isVisible = false
         atualizarContinuar()
-        viewLifecycleOwner.lifecycleScope.launch {
+        slotsJob = viewLifecycleOwner.lifecycleScope.launch {
             val r = Repositorio.disponibilidade(slug, s.id, x.id, d.toString())
             if (_b == null) return@launch
             b.progresso.isVisible = false

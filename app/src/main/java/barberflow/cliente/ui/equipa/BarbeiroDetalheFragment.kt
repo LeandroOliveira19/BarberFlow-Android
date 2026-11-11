@@ -6,11 +6,11 @@ import android.os.Bundle
 import android.transition.TransitionInflater
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import barberflow.cliente.R
+import barberflow.cliente.dados.Repositorio
+import barberflow.cliente.ui.MainActivity
 import barberflow.cliente.dados.api.dto.BarbeiroDto
 import barberflow.cliente.databinding.FragmentBarbeiroDetalheBinding
 import barberflow.cliente.ui.abrir
@@ -46,7 +46,9 @@ class BarbeiroDetalheFragment : Fragment(R.layout.fragment_barbeiro_detalhe) {
         }
         b.botaoMarcar.text = getString(R.string.detalhe_marcar_com, x.nome.substringBefore(' '))
         b.botaoMarcar.setOnClickListener {
-            findNavController().navigate(R.id.marcarFragment, bundleOf("barbeiro_id" to x.id))
+            // Abre o tab Marcar (e não um Marcar dentro do tab Equipa) com este barbeiro escolhido
+            Repositorio.preSelecaoBarbeiro = x.id
+            (activity as? MainActivity)?.irPara(R.id.marcarFragment)
         }
     }
 }
