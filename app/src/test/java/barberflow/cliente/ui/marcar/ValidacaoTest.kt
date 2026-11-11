@@ -1,5 +1,6 @@
 package barberflow.cliente.ui.marcar
 
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -16,4 +17,7 @@ class ValidacaoTest {
     @Test fun email_com_espaco() = assertFalse(emailValido("a b@c.pt"))
     @Test fun nome_curto() = assertFalse(nomeValido(" A "))
     @Test fun nome_ok() = assertTrue(nomeValido("Ana"))
+    @Test fun para_nome_vazio_e_o_proprio() = assertEquals(null, paraNomeEfetivo("   ", "Ana"))
+    @Test fun para_nome_igual_ao_proprio_e_o_proprio() = assertEquals(null, paraNomeEfetivo(" ana ", "Ana"))
+    @Test fun para_nome_normaliza_espacos() = assertEquals("Tiago Silva", paraNomeEfetivo("  Tiago   Silva ", "Ana"))
 }

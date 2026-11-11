@@ -53,6 +53,21 @@ class DtosTest {
         assertEquals("rlbarber", m.barbeariaSlug)
     }
 
+    @Test fun pedido_para_outra_pessoa_envia_para_nome() {
+        val json = gson.toJson(NovaMarcacaoPedido(5, 2, "2026-11-12", "10:00", "Ana", "912345678", "a@b.pt", paraNome = "Tiago"))
+        assertTrue(json.contains("\"para_nome\":\"Tiago\""))
+    }
+
+    @Test fun pedido_para_o_proprio_omite_para_nome() {
+        val json = gson.toJson(NovaMarcacaoPedido(5, 2, "2026-11-12", "10:00", "Ana", "912345678", "a@b.pt"))
+        assertTrue(!json.contains("para_nome"))
+    }
+
+    @Test fun marcacao_le_para_nome() {
+        val m = gson.fromJson("""{"id":7,"estado":"confirmada","inicio":"2026-11-12 10:00:00","fim":"2026-11-12 10:30:00","servico_nome":"Corte","barbeiro_nome":"André","barbearia_slug":"rlbarber","barbearia_nome":"RLBarber","para_nome":"Tiago"}""", MarcacaoDto::class.java)
+        assertEquals("Tiago", m.paraNome)
+    }
+
     @Test fun pedido_serializa_em_snake_case() {
         val json = gson.toJson(NovaMarcacaoPedido(5, 2, "2026-11-12", "10:00", "Ana", "912345678", "a@b.pt"))
         assertTrue(json.contains("\"servico_id\":5"))

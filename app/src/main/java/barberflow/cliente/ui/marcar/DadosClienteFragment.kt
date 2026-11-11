@@ -56,13 +56,16 @@ class DadosClienteFragment : Fragment(R.layout.fragment_dados_cliente) {
         b.campoNome.error = if (nomeValido(nome)) null else getString(R.string.erro_nome)
         b.campoTelemovel.error = if (telemovelValido(tel)) null else getString(R.string.erro_telemovel)
         b.campoEmail.error = if (emailValido(email)) null else getString(R.string.erro_email)
-        if (b.campoNome.error != null || b.campoTelemovel.error != null || b.campoEmail.error != null) return
+        // "Para quem é?": vazio ou igual ao próprio nome = marcação para quem marca (igual à regra do servidor)
+        val paraNome = paraNomeEfetivo(b.inputParaNome.text?.toString().orEmpty(), nome)
+        b.campoParaNome.error = if (paraNome == null || nomeValido(paraNome)) null else getString(R.string.erro_para_nome)
+        if (b.campoNome.error != null || b.campoTelemovel.error != null || b.campoEmail.error != null || b.campoParaNome.error != null) return
 
         val a = requireArguments()
         val slug = prefs.slug ?: return
         val ctx = requireContext().applicationContext
         val pedido = NovaMarcacaoPedido(
-            a.getInt("servico_id"), a.getInt("barbeiro_id"), a.getString("data")!!, a.getString("hora")!!, nome, tel, email,
+            a.getInt("servico_id"), a.getInt("barbeiro_id"), a.getString("data")!!, a.getString("hora")!!, nome, tel, email, paraNome,
         )
         aCarregar(true)
 
@@ -77,7 +80,7 @@ class DadosClienteFragment : Fragment(R.layout.fragment_dados_cliente) {
                 prefs.pendenteMarcacaoId = r.dados.marcacaoId
                 prefs.pendenteCodigoExpiraEm = r.dados.codigoExpiraEm
                 prefs.pendenteToken = r.dados.tokenPendente
-                prefs.pendenteResumo = Gson().toJson(resumo(a, r.dados.marcacaoId, slug))
+                prefs.pendenteResumo = Gson().toJson(resumo(a, r.dados.marcacaoId, slug, paraNome))
                 Agendador.aoCriar(ctx, r.dados.marcacaoId, r.dados.codigoExpiraEm)
             }
             r
@@ -110,7 +113,7 @@ class DadosClienteFragment : Fragment(R.layout.fragment_dados_cliente) {
     }
 
     /** Resumo guardado até à confirmação (o token final só chega depois de verificar o código). */
-    private fun resumo(a: Bundle, id: Int, slug: String): MarcacaoLocal {
+    private fun resumo(a: Bundle, id: Int, slug: String, paraNome: String?): MarcacaoLocal {
         val inicio = LocalDate.parse(a.getString("data")).atTime(LocalTime.parse(a.getString("hora")))
         val fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         return MarcacaoLocal(
@@ -120,6 +123,7 @@ class DadosClienteFragment : Fragment(R.layout.fragment_dados_cliente) {
             inicio = inicio.format(fmt),
             fim = inicio.plusMinutes(a.getInt("duracao").toLong()).format(fmt),
             estado = "pendente_verificacao",
+            paraNome = paraNome,
         )
     }
 

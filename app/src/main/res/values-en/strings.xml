@@ -52,6 +52,10 @@
     <string name="slot_ocupado_recarregado">That time was just taken. Pick another one.</string>
 
     <string name="dados_nome">Name</string>
+    <string name="dados_para_nome">Who is it for? (optional)</string>
+    <string name="dados_para_nome_ajuda">Only if the booking is for someone else (e.g. your son).</string>
+    <string name="erro_para_nome">Enter the person\'s name (2 to 120 characters).</string>
+    <string name="marcacao_para">For %1$s</string>
     <string name="dados_telemovel">Mobile phone</string>
     <string name="dados_email">Email</string>
     <string name="dados_email_ajuda">We\'ll send the confirmation code there.</string>

@@ -16,3 +16,9 @@ fun telemovelValido(s: String): Boolean {
 fun emailValido(s: String): Boolean = Regex("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$").matches(s.trim())
 
 fun nomeValido(s: String): Boolean = s.trim().length in 2..120
+
+/** "Para quem é?": espaços normalizados; vazio ou igual ao nome de quem marca → null (é para o próprio). */
+fun paraNomeEfetivo(paraNome: String, nomeCliente: String): String? {
+    val p = paraNome.trim().replace(Regex("\\s+"), " ")
+    return if (p.isEmpty() || p.equals(nomeCliente.trim(), ignoreCase = true)) null else p
+}

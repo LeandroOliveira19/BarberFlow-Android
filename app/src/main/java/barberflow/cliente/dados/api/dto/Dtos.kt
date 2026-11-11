@@ -61,6 +61,8 @@ data class NovaMarcacaoPedido(
     @SerializedName("nome") val nome: String,
     @SerializedName("telemovel") val telemovel: String,
     @SerializedName("email") val email: String,
+    /** Para quem é a marcação (null = para quem marca; o Gson omite o campo). */
+    @SerializedName("para_nome") val paraNome: String? = null,
 )
 
 data class NovaMarcacaoResposta(
@@ -102,6 +104,7 @@ data class MarcacaoDto(
     @SerializedName("barbeiro_nome") val barbeiroNome: String,
     @SerializedName("barbearia_slug") val barbeariaSlug: String,
     @SerializedName("barbearia_nome") val barbeariaNome: String,
+    @SerializedName("para_nome") val paraNome: String? = null,
 )
 
 data class ErroCorpo(@SerializedName("erro") val erro: ErroDto?)

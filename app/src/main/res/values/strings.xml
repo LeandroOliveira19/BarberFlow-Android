@@ -59,6 +59,10 @@
 
     <!-- Dados do cliente -->
     <string name="dados_nome">Nome</string>
+    <string name="dados_para_nome">Para quem é? (opcional)</string>
+    <string name="dados_para_nome_ajuda">Preenche só se a marcação for para outra pessoa (ex.: o teu filho).</string>
+    <string name="erro_para_nome">Indica o nome da pessoa (2 a 120 caracteres).</string>
+    <string name="marcacao_para">Para %1$s</string>
     <string name="dados_telemovel">Telemóvel</string>
     <string name="dados_email">Email</string>
     <string name="dados_email_ajuda">Enviamos-te aí o código de confirmação.</string>

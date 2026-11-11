@@ -14,4 +14,6 @@ data class MarcacaoLocal(
     val inicio: String,
     val fim: String,
     val estado: String,
+    /** Para quem é a marcação (null = para o próprio cliente). Coluna nova na versão 2 da BD. */
+    val paraNome: String? = null,
 )

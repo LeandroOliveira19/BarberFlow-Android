@@ -134,7 +134,8 @@ class MarcacoesAdapter(private val lista: List<MarcacaoLocal>) : RecyclerView.Ad
         val m = lista[pos]
         val ctx = h.itemView.context
         h.b.quando.text = ctx.getString(R.string.marcacao_quando, dataCurta(m.inicio), horaCurta(m.inicio))
-        h.b.servicoBarbeiro.text = ctx.getString(R.string.marcacao_com, m.servicoNome, m.barbeiroNome)
+        val servico = ctx.getString(R.string.marcacao_com, m.servicoNome, m.barbeiroNome)
+        h.b.servicoBarbeiro.text = m.paraNome?.let { ctx.getString(R.string.marcacao_para, it) + " · " + servico } ?: servico
         h.b.estado.text = rotuloEstado(ctx, m.estado)
         val cor = ctx.getColor(corEstado(m.estado))
         h.b.estado.setTextColor(cor)
