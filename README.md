@@ -20,7 +20,10 @@ Fala com a API JSON do backend PHP (`api/v1` no repositório web, branch `api-v1
 | Flavor | Servidor | Notas |
 |---|---|---|
 | `local` | `http://10.0.2.2:8080/projeto/projeto/api/v1/` | 10.0.2.2 = o PC visto pelo emulador. Mostra o código de dev. |
-| `ua` | `https://esan-tesp-ds-paw.web.ua.pt/tesp-ds-g9/api/v1/` | Só funciona depois de a API estar publicada na UA. Email real. |
+| `usb` | `http://127.0.0.1:8080/projeto/projeto/api/v1/` | Telemóvel por cabo: `adb reverse tcp:8080 tcp:8080`. Mostra o código de dev. |
+| `ua` | `https://esan-tesp-ds-paw.web.ua.pt/tesp-ds-g9/projeto/api/v1/` | Versão para partilhar (`apk\BarberFlow.apk`). Precisa da API publicada na UA (`deploy-ua\LER-PRIMEIRO.md`). Email real. |
+
+Para dar a app a outras pessoas, ver [COMO-INSTALAR-A-APP.md](COMO-INSTALAR-A-APP.md).
 
 Para um **telemóvel físico** com o flavor `local`: põe o IP do PC no `BASE_URL` (app/build.gradle.kts) e em `app/src/local/res/xml/network_security_config.xml`, e arranca o `php -S 0.0.0.0:8080 ...`.
 

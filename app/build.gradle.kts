@@ -28,9 +28,18 @@ android {
             buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8080/projeto/projeto/api/v1/\"")
             buildConfigField("boolean", "MOSTRAR_CODIGO_DEV", "true")
         }
+        // Telemóvel ligado por cabo: "adb reverse tcp:8080 tcp:8080" faz o 127.0.0.1:8080 do telemóvel
+        // chegar ao PC pelo cabo USB (sem Wi-Fi nem firewall). Usa o mesmo network_security_config do local.
+        create("usb") {
+            dimension = "ambiente"
+            applicationIdSuffix = ".usb"
+            versionNameSuffix = "-usb"
+            buildConfigField("String", "BASE_URL", "\"http://127.0.0.1:8080/projeto/projeto/api/v1/\"")
+            buildConfigField("boolean", "MOSTRAR_CODIGO_DEV", "true")
+        }
         create("ua") {
             dimension = "ambiente"
-            buildConfigField("String", "BASE_URL", "\"https://esan-tesp-ds-paw.web.ua.pt/tesp-ds-g9/api/v1/\"")
+            buildConfigField("String", "BASE_URL", "\"https://esan-tesp-ds-paw.web.ua.pt/tesp-ds-g9/projeto/api/v1/\"")
             buildConfigField("boolean", "MOSTRAR_CODIGO_DEV", "false")
         }
     }
