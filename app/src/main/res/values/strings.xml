@@ -1,4 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">BarberFlow</string>
+
+    <!-- Navegação -->
+    <string name="nav_inicio">Início</string>
+    <string name="nav_servicos">Serviços</string>
+    <string name="nav_equipa">Equipa</string>
+    <string name="nav_marcar">Marcar</string>
+    <string name="nav_marcacoes">Marcações</string>
+    <string name="titulo_detalhe_barbeiro">Barbeiro</string>
+    <string name="titulo_dados_cliente">Os teus dados</string>
+    <string name="titulo_verificar">Confirmar marcação</string>
+
+    <!-- Onboarding -->
+    <string name="onb_titulo">Bem-vindo ao BarberFlow</string>
+    <string name="onb_subtitulo">Indica o código da tua barbearia (está no site ou no QR code da barbearia).</string>
+    <string name="onb_slug">Código da barbearia</string>
+    <string name="onb_slug_exemplo">ex.: rlbarber</string>
+    <string name="onb_entrar">Entrar</string>
+    <string name="onb_slug_vazio">Escreve o código da barbearia.</string>
+
+    <!-- Início -->
+    <string name="inicio_ola">Olá, %1$s!</string>
+    <string name="inicio_horario">Aberto %1$s · %2$s–%3$s</string>
+    <string name="inicio_ligar">Ligar</string>
+    <string name="inicio_email">Email</string>
+    <string name="inicio_mapa">Mapa</string>
+    <string name="inicio_lembrete">Lembrar-me das marcações</string>
+    <string name="inicio_reviews">O que dizem os clientes</string>
+    <string name="inicio_sem_reviews">Sem reviews disponíveis.</string>
+    <string name="inicio_mudar_barbearia">Mudar de barbearia</string>
+    <string name="inicio_notificacoes_off">As notificações estão desativadas: não vais receber lembretes das marcações.</string>
+    <string name="inicio_ativar">Ativar</string>
+    <string name="sem_app">Não há nenhuma app para abrir isto.</string>
+
+    <!-- Serviços / Equipa -->
+    <string name="servicos_vazio">Esta barbearia ainda não tem serviços.</string>
+    <string name="servico_duracao_preco">%1$s · %2$s</string>
+    <string name="equipa_vazia">Ainda não há barbeiros disponíveis.</string>
+    <string name="detalhe_especialidades">Especialidades</string>
+    <string name="detalhe_sobre">Sobre</string>
+    <string name="detalhe_instagram">Instagram</string>
+    <string name="detalhe_marcar_com">Marcar com %1$s</string>
+    <string name="foto_barbeiro">Foto do barbeiro</string>
+
+    <!-- Marcar -->
+    <string name="marcar_servico">Serviço</string>
+    <string name="marcar_barbeiro">Barbeiro</string>
+    <string name="marcar_dia">Dia</string>
+    <string name="marcar_escolher_dia">Escolher dia</string>
+    <string name="marcar_horarios">Horários livres</string>
+    <string name="marcar_sem_horarios">Sem horários livres neste dia.</string>
+    <string name="marcar_escolhe_dia_primeiro">Escolhe um dia para ver os horários.</string>
+    <string name="marcar_fechado">A barbearia está fechada nesse dia.</string>
+    <string name="marcar_continuar">Continuar</string>
+    <string name="marcar_resumo">%1$s com %2$s\n%3$s às %4$s</string>
+    <string name="slot_ocupado_recarregado">Esse horário acabou de ser ocupado. Escolhe outro.</string>
+
+    <!-- Dados do cliente -->
+    <string name="dados_nome">Nome</string>
+    <string name="dados_telemovel">Telemóvel</string>
+    <string name="dados_email">Email</string>
+    <string name="dados_email_ajuda">Enviamos-te aí o código de confirmação.</string>
+    <string name="dados_confirmar">Receber código</string>
+    <string name="erro_nome">Indica o teu nome (2 a 120 caracteres).</string>
+    <string name="erro_telemovel">Indica um telemóvel português válido (9 dígitos).</string>
+    <string name="erro_email">Indica um email válido.</string>
+
+    <!-- Verificar -->
+    <string name="verificar_info">Enviámos um código de 6 dígitos para %1$s.</string>
+    <string name="verificar_email_falhou">Não conseguimos enviar o email. Pede um novo código ou contacta a barbearia.</string>
+    <string name="verificar_codigo">Código</string>
+    <string name="verificar_confirmar">Confirmar</string>
+    <string name="verificar_abrir_email">Abrir email</string>
+    <string name="verificar_reenviar">Reenviar código</string>
+    <string name="verificar_reenviado">Enviámos um novo código.</string>
+    <string name="verificar_expira_em">O código expira em %1$s</string>
+    <string name="verificar_expirou">O código expirou. Faz uma nova marcação.</string>
+    <string name="verificar_codigo_dev">Código (modo desenvolvimento): %1$s</string>
+    <string name="verificar_codigo_incompleto">O código tem 6 dígitos.</string>
+    <string name="verificar_restam">%1$s Restam %2$d tentativas.</string>
+    <string name="verificar_sucesso">Marcação confirmada!</string>
+    <string name="verificar_sem_pendente">Não há nenhuma marcação à espera de confirmação.</string>
+
+    <!-- Permissão de notificações -->
+    <string name="perm_titulo">Lembretes das marcações</string>
+    <string name="perm_texto">Para te lembrarmos da marcação antes da hora, a app precisa de autorização para mostrar notificações.</string>
+    <string name="perm_permitir">Permitir</string>
+    <string name="agora_nao">Agora não</string>
+
+    <!-- Marcações -->
+    <string name="marcacoes_vazio">Ainda não tens marcações neste dispositivo.</string>
+    <string name="sessao_ativa_texto">Identificado como %1$s</string>
+    <string name="sessao_inativa_texto">Ainda não te identificaste. Faz uma marcação para guardar os teus dados.</string>
+    <string name="sessao_terminar">Terminar sessão</string>
+    <string name="sessao_identificar">Identificar-me</string>
+    <string name="sessao_confirmar_titulo">Terminar sessão?</string>
+    <string name="sessao_confirmar_texto">Os teus dados e a lista de marcações deste dispositivo vão ser apagados. As marcações continuam válidas na barbearia.</string>
+    <string name="marcacao_quando">%1$s às %2$s</string>
+    <string name="marcacao_com">%1$s com %2$s</string>
+
+    <!-- Estados (iguais ao painel de gestão) -->
+    <string name="estado_pendente_verificacao">Por confirmar</string>
+    <string name="estado_confirmada">Confirmada</string>
+    <string name="estado_concluida">Concluída</string>
+    <string name="estado_cancelada">Cancelada</string>
+    <string name="estado_expirada">Expirada</string>
+
+    <!-- Notificações -->
+    <string name="canal_marcacoes">Marcações</string>
+    <string name="canal_marcacoes_desc">Lembretes e alterações às tuas marcações</string>
+    <string name="notif_lembrete_titulo">A tua marcação é daqui a %1$d min</string>
+    <string name="notif_lembrete_texto">%1$s com %2$s às %3$s</string>
+    <string name="notif_expirou_titulo">O código expirou</string>
+    <string name="notif_expirou_texto">A marcação não foi confirmada a tempo. Podes fazer uma nova.</string>
+    <string name="notif_cancelada_titulo">Marcação cancelada</string>
+    <string name="notif_cancelada_texto">A tua marcação de %1$s foi cancelada pela barbearia.</string>
+
+    <!-- Genéricos -->
+    <string name="tentar_de_novo">Tentar de novo</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="sim">Sim</string>
+
+    <string-array name="dias_iso">
+        <item>Seg</item>
+        <item>Ter</item>
+        <item>Qua</item>
+        <item>Qui</item>
+        <item>Sex</item>
+        <item>Sáb</item>
+        <item>Dom</item>
+    </string-array>
+
+    <string-array name="lembrete_opcoes">
+        <item>15 minutos antes</item>
+        <item>30 minutos antes</item>
+        <item>1 hora antes</item>
+        <item>2 horas antes</item>
+    </string-array>
 </resources>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/marcar_servico"
+                android:textColor="@color/bf_texto_secundario" />
+
+            <Spinner
+                android:id="@+id/spinnerServico"
+                android:layout_width="match_parent"
+                android:layout_height="48dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/marcar_barbeiro"
+                android:textColor="@color/bf_texto_secundario" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/fotoBarbeiro"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@color/bf_superficie_alta"
+                    android:contentDescription="@string/foto_barbeiro"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_barbeiro" />
+
+                <Spinner
+                    android:id="@+id/spinnerBarbeiro"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/marcar_dia"
+                android:textColor="@color/bf_texto_secundario" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/botaoDia"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/marcar_escolher_dia"
+                app:icon="@drawable/ic_marcar" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/marcar_horarios"
+                android:textColor="@color/bf_texto_secundario" />
+
+            <ProgressBar
+                android:id="@+id/progresso"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="12dp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/semHorarios"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/marcar_escolhe_dia_primeiro"
+                android:textColor="@color/bf_texto_secundario" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/listaSlots"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:nestedScrollingEnabled="false" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/botaoContinuar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_margin="16dp"
+        android:enabled="false"
+        android:text="@string/marcar_continuar" />
+</LinearLayout>

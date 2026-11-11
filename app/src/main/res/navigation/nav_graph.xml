@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/inicioFragment">
+
+    <fragment
+        android:id="@+id/inicioFragment"
+        android:name="barberflow.cliente.ui.inicio.InicioFragment"
+        android:label="@string/nav_inicio" />
+
+    <fragment
+        android:id="@+id/servicosFragment"
+        android:name="barberflow.cliente.ui.servicos.ServicosFragment"
+        android:label="@string/nav_servicos" />
+
+    <fragment
+        android:id="@+id/equipaFragment"
+        android:name="barberflow.cliente.ui.equipa.EquipaFragment"
+        android:label="@string/nav_equipa">
+        <action
+            android:id="@+id/action_equipa_para_detalhe"
+            app:destination="@id/barbeiroDetalheFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/barbeiroDetalheFragment"
+        android:name="barberflow.cliente.ui.equipa.BarbeiroDetalheFragment"
+        android:label="@string/titulo_detalhe_barbeiro">
+        <argument android:name="barbeiro" app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/marcarFragment"
+        android:name="barberflow.cliente.ui.marcar.MarcarFragment"
+        android:label="@string/nav_marcar">
+        <argument android:name="servico_id" android:defaultValue="-1" app:argType="integer" />
+        <argument android:name="barbeiro_id" android:defaultValue="-1" app:argType="integer" />
+        <action
+            android:id="@+id/action_marcar_para_dados"
+            app:destination="@id/dadosClienteFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/dadosClienteFragment"
+        android:name="barberflow.cliente.ui.marcar.DadosClienteFragment"
+        android:label="@string/titulo_dados_cliente">
+        <action
+            android:id="@+id/action_dados_para_verificar"
+            app:destination="@id/verificarFragment"
+            app:popUpTo="@id/marcarFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/verificarFragment"
+        android:name="barberflow.cliente.ui.marcar.VerificarFragment"
+        android:label="@string/titulo_verificar">
+        <argument android:name="marcacao_id" android:defaultValue="-1" app:argType="integer" />
+        <argument android:name="codigo_dev" android:defaultValue="@null" app:argType="string" app:nullable="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/marcacoesFragment"
+        android:name="barberflow.cliente.ui.marcacoes.MarcacoesFragment"
+        android:label="@string/nav_marcacoes" />
+</navigation>

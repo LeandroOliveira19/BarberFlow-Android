@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/saudacao"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:textColor="@color/bf_texto_secundario"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/BarberFlow.Cartao"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:id="@+id/nomeBarbearia"
+                    style="@style/BarberFlow.Titulo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/morada"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/bf_texto_secundario" />
+
+                <TextView
+                    android:id="@+id/horario"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/bf_texto_secundario" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/botaoLigar"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:maxLines="1"
+                        android:paddingHorizontal="8dp"
+                        android:textSize="13sp"
+                        app:iconPadding="4dp"
+                        app:iconSize="18dp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/inicio_ligar"
+                        app:icon="@drawable/ic_telefone" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/botaoEmail"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:maxLines="1"
+                        android:paddingHorizontal="8dp"
+                        android:textSize="13sp"
+                        app:iconPadding="4dp"
+                        app:iconSize="18dp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="8dp"
+                        android:layout_weight="1"
+                        android:text="@string/inicio_email"
+                        app:icon="@drawable/ic_email" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/botaoMapa"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:maxLines="1"
+                        android:paddingHorizontal="8dp"
+                        android:textSize="13sp"
+                        app:iconPadding="4dp"
+                        app:iconSize="18dp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/inicio_mapa"
+                        app:icon="@drawable/ic_mapa" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/avisoNotificacoes"
+            style="@style/BarberFlow.Cartao"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:visibility="gone"
+            app:strokeColor="@color/bf_aviso">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/inicio_notificacoes_off"
+                    android:textColor="@color/bf_aviso" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/botaoAtivarNotificacoes"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/inicio_ativar" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/inicio_lembrete"
+            android:textColor="@color/bf_texto" />
+
+        <Spinner
+            android:id="@+id/spinnerLembrete"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="4dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/inicio_reviews"
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+            android:textColor="@color/bf_dourado" />
+
+        <ProgressBar
+            android:id="@+id/progresso"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp" />
+
+        <TextView
+            android:id="@+id/semReviews"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/inicio_sem_reviews"
+            android:textColor="@color/bf_texto_secundario"
+            android:visibility="gone" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listaReviews"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:nestedScrollingEnabled="false" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/botaoMudarBarbearia"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/inicio_mudar_barbearia" />
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

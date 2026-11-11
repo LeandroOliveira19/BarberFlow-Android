@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="colunas_equipa">2</integer>
+    <integer name="colunas_slots">4</integer>
+    <!-- minutos correspondentes a @array/lembrete_opcoes -->
+    <integer-array name="lembrete_minutos">
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>120</item>
+    </integer-array>
+</resources>

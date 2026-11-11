@@ -40,6 +40,17 @@ object Repositorio {
         if (!temInternet(app)) Resultado.Erro("Sem ligação à internet.") else chamar(bloco)
 
     suspend fun barbearia(slug: String): Resultado<BarbeariaDto> = pedido { api.barbearia("barbearias/$slug") }
+
+    /** Dados da barbearia escolhida, guardados em memória enquanto a app está aberta. */
+    private var barbeariaCache: BarbeariaDto? = null
+
+    suspend fun barbeariaAtual(): Resultado<BarbeariaDto> {
+        val slug = prefs.slug ?: return Resultado.Erro("Escolhe uma barbearia.")
+        barbeariaCache?.takeIf { it.slug == slug }?.let { return Resultado.Ok(it) }
+        return barbearia(slug).also { if (it is Resultado.Ok) barbeariaCache = it.dados }
+    }
+
+    fun esquecerBarbearia() { barbeariaCache = null; prefs.limparBarbearia() }
     suspend fun servicos(slug: String): Resultado<List<ServicoDto>> = pedido { api.servicos("barbearias/$slug/servicos") }
     suspend fun equipa(slug: String): Resultado<List<BarbeiroDto>> = pedido { api.equipa("barbearias/$slug/equipa") }
     suspend fun reviews(slug: String): Resultado<List<ReviewDto>> = pedido { api.reviews("barbearias/$slug/reviews") }

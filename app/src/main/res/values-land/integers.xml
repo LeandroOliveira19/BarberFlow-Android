@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Em paisagem há mais espaço: mais colunas nas grelhas -->
+<resources>
+    <integer name="colunas_equipa">3</integer>
+    <integer name="colunas_slots">6</integer>
+</resources>

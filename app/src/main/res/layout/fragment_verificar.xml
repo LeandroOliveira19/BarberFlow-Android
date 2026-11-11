@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:id="@+id/conteudo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <TextView
+                android:id="@+id/info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/bf_texto"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/contador"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/bf_dourado" />
+
+            <TextView
+                android:id="@+id/codigoDev"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/bf_info"
+                android:visibility="gone" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/campoCodigo"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:hint="@string/verificar_codigo">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inputCodigo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:letterSpacing="0.4"
+                    android:maxLength="6"
+                    android:textSize="24sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/botaoConfirmar"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/verificar_confirmar" />
+
+            <ProgressBar
+                android:id="@+id/progresso"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/botaoAbrirEmail"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/verificar_abrir_email" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/botaoReenviar"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/verificar_reenviar" />
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Ecrã de sucesso (animado com AnimatorSet) -->
+    <LinearLayout
+        android:id="@+id/sucesso"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bf_fundo"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/iconeSucesso"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_check"
+            android:tint="@color/bf_sucesso" />
+
+        <TextView
+            style="@style/BarberFlow.Titulo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/verificar_sucesso" />
+    </LinearLayout>
+</FrameLayout>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BarberFlow</string>
+
+    <string name="nav_inicio">Home</string>
+    <string name="nav_servicos">Services</string>
+    <string name="nav_equipa">Team</string>
+    <string name="nav_marcar">Book</string>
+    <string name="nav_marcacoes">Bookings</string>
+    <string name="titulo_detalhe_barbeiro">Barber</string>
+    <string name="titulo_dados_cliente">Your details</string>
+    <string name="titulo_verificar">Confirm booking</string>
+
+    <string name="onb_titulo">Welcome to BarberFlow</string>
+    <string name="onb_subtitulo">Enter your barbershop\'s code (it\'s on their website or QR code).</string>
+    <string name="onb_slug">Barbershop code</string>
+    <string name="onb_slug_exemplo">e.g. rlbarber</string>
+    <string name="onb_entrar">Enter</string>
+    <string name="onb_slug_vazio">Type the barbershop code.</string>
+
+    <string name="inicio_ola">Hi, %1$s!</string>
+    <string name="inicio_horario">Open %1$s · %2$s–%3$s</string>
+    <string name="inicio_ligar">Call</string>
+    <string name="inicio_email">Email</string>
+    <string name="inicio_mapa">Map</string>
+    <string name="inicio_lembrete">Remind me of bookings</string>
+    <string name="inicio_reviews">What clients say</string>
+    <string name="inicio_sem_reviews">No reviews available.</string>
+    <string name="inicio_mudar_barbearia">Change barbershop</string>
+    <string name="inicio_notificacoes_off">Notifications are off: you won\'t get booking reminders.</string>
+    <string name="inicio_ativar">Turn on</string>
+    <string name="sem_app">No app can open this.</string>
+
+    <string name="servicos_vazio">This barbershop has no services yet.</string>
+    <string name="servico_duracao_preco">%1$s · %2$s</string>
+    <string name="equipa_vazia">No barbers available yet.</string>
+    <string name="detalhe_especialidades">Specialties</string>
+    <string name="detalhe_sobre">About</string>
+    <string name="detalhe_instagram">Instagram</string>
+    <string name="detalhe_marcar_com">Book with %1$s</string>
+    <string name="foto_barbeiro">Barber photo</string>
+
+    <string name="marcar_servico">Service</string>
+    <string name="marcar_barbeiro">Barber</string>
+    <string name="marcar_dia">Day</string>
+    <string name="marcar_escolher_dia">Pick a day</string>
+    <string name="marcar_horarios">Free times</string>
+    <string name="marcar_sem_horarios">No free times on this day.</string>
+    <string name="marcar_escolhe_dia_primeiro">Pick a day to see the times.</string>
+    <string name="marcar_fechado">The barbershop is closed on that day.</string>
+    <string name="marcar_continuar">Continue</string>
+    <string name="marcar_resumo">%1$s with %2$s\n%3$s at %4$s</string>
+    <string name="slot_ocupado_recarregado">That time was just taken. Pick another one.</string>
+
+    <string name="dados_nome">Name</string>
+    <string name="dados_telemovel">Mobile phone</string>
+    <string name="dados_email">Email</string>
+    <string name="dados_email_ajuda">We\'ll send the confirmation code there.</string>
+    <string name="dados_confirmar">Get code</string>
+    <string name="erro_nome">Enter your name (2 to 120 characters).</string>
+    <string name="erro_telemovel">Enter a valid Portuguese phone number (9 digits).</string>
+    <string name="erro_email">Enter a valid email.</string>
+
+    <string name="verificar_info">We sent a 6-digit code to %1$s.</string>
+    <string name="verificar_email_falhou">We couldn\'t send the email. Ask for a new code or contact the barbershop.</string>
+    <string name="verificar_codigo">Code</string>
+    <string name="verificar_confirmar">Confirm</string>
+    <string name="verificar_abrir_email">Open email</string>
+    <string name="verificar_reenviar">Resend code</string>
+    <string name="verificar_reenviado">We sent a new code.</string>
+    <string name="verificar_expira_em">The code expires in %1$s</string>
+    <string name="verificar_expirou">The code expired. Make a new booking.</string>
+    <string name="verificar_codigo_dev">Code (development mode): %1$s</string>
+    <string name="verificar_codigo_incompleto">The code has 6 digits.</string>
+    <string name="verificar_restam">%1$s %2$d attempts left.</string>
+    <string name="verificar_sucesso">Booking confirmed!</string>
+    <string name="verificar_sem_pendente">There is no booking waiting for confirmation.</string>
+
+    <string name="perm_titulo">Booking reminders</string>
+    <string name="perm_texto">To remind you before your booking, the app needs permission to show notifications.</string>
+    <string name="perm_permitir">Allow</string>
+    <string name="agora_nao">Not now</string>
+
+    <string name="marcacoes_vazio">You have no bookings on this device yet.</string>
+    <string name="sessao_ativa_texto">Signed in as %1$s</string>
+    <string name="sessao_inativa_texto">You haven\'t identified yourself yet. Make a booking to save your details.</string>
+    <string name="sessao_terminar">Sign out</string>
+    <string name="sessao_identificar">Identify me</string>
+    <string name="sessao_confirmar_titulo">Sign out?</string>
+    <string name="sessao_confirmar_texto">Your details and this device\'s booking list will be deleted. Your bookings stay valid at the barbershop.</string>
+    <string name="marcacao_quando">%1$s at %2$s</string>
+    <string name="marcacao_com">%1$s with %2$s</string>
+
+    <string name="estado_pendente_verificacao">Pending</string>
+    <string name="estado_confirmada">Confirmed</string>
+    <string name="estado_concluida">Completed</string>
+    <string name="estado_cancelada">Cancelled</string>
+    <string name="estado_expirada">Expired</string>
+
+    <string name="canal_marcacoes">Bookings</string>
+    <string name="canal_marcacoes_desc">Reminders and changes to your bookings</string>
+    <string name="notif_lembrete_titulo">Your booking is in %1$d min</string>
+    <string name="notif_lembrete_texto">%1$s with %2$s at %3$s</string>
+    <string name="notif_expirou_titulo">The code expired</string>
+    <string name="notif_expirou_texto">The booking wasn\'t confirmed in time. You can make a new one.</string>
+    <string name="notif_cancelada_titulo">Booking cancelled</string>
+    <string name="notif_cancelada_texto">Your booking on %1$s was cancelled by the barbershop.</string>
+
+    <string name="tentar_de_novo">Try again</string>
+    <string name="cancelar">Cancel</string>
+    <string name="sim">Yes</string>
+
+    <string-array name="dias_iso">
+        <item>Mon</item>
+        <item>Tue</item>
+        <item>Wed</item>
+        <item>Thu</item>
+        <item>Fri</item>
+        <item>Sat</item>
+        <item>Sun</item>
+    </string-array>
+
+    <string-array name="lembrete_opcoes">
+        <item>15 minutes before</item>
+        <item>30 minutes before</item>
+        <item>1 hour before</item>
+        <item>2 hours before</item>
+    </string-array>
+</resources>
