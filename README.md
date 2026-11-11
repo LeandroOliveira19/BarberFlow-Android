@@ -13,7 +13,7 @@ Fala com a API JSON do backend PHP (`api/v1` no repositório web, branch `api-v1
 5. Na app escreve o código **`rlbarber`**.
    No flavor `local` o código de confirmação aparece no ecrã (linha azul "modo desenvolvimento"), por isso não precisas de email real.
 
-**Sem Android Studio:** `apk\BarberFlow-local.apk` pode ser arrastado para a janela do emulador (instala sozinho).
+**Sem Android Studio:** `apk\BarberFlow-dev-emulador.apk` pode ser arrastado para a janela do emulador (instala sozinho).
 
 ### Flavors
 
