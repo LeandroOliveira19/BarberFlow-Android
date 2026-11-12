@@ -8,6 +8,8 @@ import barberflow.cliente.dados.api.dto.MarcacaoDto
 import barberflow.cliente.dados.api.dto.NovaMarcacaoPedido
 import barberflow.cliente.dados.api.dto.NovaMarcacaoResposta
 import barberflow.cliente.dados.api.dto.ReenvioPedido
+import barberflow.cliente.dados.api.dto.RemarcarPedido
+import barberflow.cliente.dados.api.dto.TokenPedido
 import barberflow.cliente.dados.api.dto.ReenvioResposta
 import barberflow.cliente.dados.api.dto.ReviewDto
 import barberflow.cliente.dados.api.dto.ServicoDto
@@ -54,4 +56,10 @@ interface ApiServico {
 
     @GET("index.php")
     suspend fun marcacoes(@Query("r") r: String, @Query("tokens") tokens: String): Response<List<MarcacaoDto>>
+
+    @POST("index.php")
+    suspend fun cancelar(@Query("r") r: String, @Body pedido: TokenPedido): Response<MarcacaoDto>
+
+    @POST("index.php")
+    suspend fun remarcar(@Query("r") r: String, @Body pedido: RemarcarPedido): Response<MarcacaoDto>
 }

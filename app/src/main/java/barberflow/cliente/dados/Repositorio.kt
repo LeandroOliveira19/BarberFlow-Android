@@ -11,6 +11,8 @@ import barberflow.cliente.dados.api.dto.NovaMarcacaoPedido
 import barberflow.cliente.dados.api.dto.NovaMarcacaoResposta
 import barberflow.cliente.dados.api.dto.ReenvioPedido
 import barberflow.cliente.dados.api.dto.ReenvioResposta
+import barberflow.cliente.dados.api.dto.RemarcarPedido
+import barberflow.cliente.dados.api.dto.TokenPedido
 import barberflow.cliente.dados.api.dto.ReviewDto
 import barberflow.cliente.dados.api.dto.ServicoDto
 import barberflow.cliente.dados.api.dto.VerificacaoResposta
@@ -100,6 +102,10 @@ object Repositorio {
                 val mudadas = mutableListOf<MarcacaoLocal>()
                 for (l in locais) {
                     val remoto = porId[l.id] ?: continue
+                    // v3: marcações guardadas antes de existir o serviço/barbeiro ficam com os ids (para remarcar)
+                    if (remoto.servicoId != null && (l.servicoId != remoto.servicoId || l.barbeiroId != remoto.barbeiroId)) {
+                        dao.atualizarIds(l.id, remoto.servicoId, remoto.barbeiroId)
+                    }
                     if (remoto.estado != l.estado) {
                         dao.atualizarEstado(l.id, remoto.estado)
                         // Revisão #5: quem atualiza o estado também cancela o lembrete (pull-to-refresh ou worker)
@@ -113,4 +119,30 @@ object Repositorio {
     }
 
     suspend fun futurasConfirmadas(): List<MarcacaoLocal> = dao.futurasConfirmadas(agoraApi())
+
+    /** Cancela na API; em sucesso grava o estado e cancela o lembrete. */
+    suspend fun cancelar(m: MarcacaoLocal): Resultado<MarcacaoLocal> =
+        when (val r = pedido { api.cancelar("marcacoes/${m.id}/cancelar", TokenPedido(m.token)) }) {
+            is Resultado.Erro -> r
+            is Resultado.Ok -> {
+                dao.atualizarEstado(m.id, r.dados.estado)
+                Lembretes.cancelarLembrete(app, m.id)
+                Resultado.Ok(m.copy(estado = r.dados.estado))
+            }
+        }
+
+    /** Remarca na API (mesmo serviço); em sucesso grava o novo horário e reagenda o lembrete. */
+    suspend fun remarcar(m: MarcacaoLocal, barbeiroId: Int, data: String, hora: String): Resultado<MarcacaoLocal> =
+        when (val r = pedido { api.remarcar("marcacoes/${m.id}/remarcar", RemarcarPedido(m.token, barbeiroId, data, hora)) }) {
+            is Resultado.Erro -> r
+            is Resultado.Ok -> {
+                val d = r.dados
+                val nova = m.copy(inicio = d.inicio, fim = d.fim, barbeiroId = d.barbeiroId ?: barbeiroId,
+                    barbeiroNome = d.barbeiroNome, estado = d.estado)
+                dao.atualizarHorario(m.id, nova.inicio, nova.fim, nova.barbeiroId ?: barbeiroId, nova.barbeiroNome)
+                Lembretes.cancelarLembrete(app, m.id)
+                Lembretes.agendarLembrete(app, nova, prefs.lembreteMinutos)
+                Resultado.Ok(nova)
+            }
+        }
 }

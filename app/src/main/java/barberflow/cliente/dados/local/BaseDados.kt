@@ -8,7 +8,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
 /** Room: abstração sobre SQLite para dados estruturados privados da app. */
-@Database(entities = [MarcacaoLocal::class], version = 2, exportSchema = false)
+@Database(entities = [MarcacaoLocal::class], version = 3, exportSchema = false)
 abstract class BaseDados : RoomDatabase() {
     abstract fun marcacoes(): MarcacaoDao
 
@@ -20,11 +20,19 @@ abstract class BaseDados : RoomDatabase() {
             }
         }
 
+        /** v2 → v3: serviço e barbeiro de cada marcação (para remarcar). As marcações antigas ficam com null até sincronizar. */
+        val MIGRACAO_2_3 = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE marcacoes ADD COLUMN servicoId INTEGER")
+                db.execSQL("ALTER TABLE marcacoes ADD COLUMN barbeiroId INTEGER")
+            }
+        }
+
         @Volatile private var instancia: BaseDados? = null
 
         fun obter(ctx: Context): BaseDados = instancia ?: synchronized(this) {
             instancia ?: Room.databaseBuilder(ctx.applicationContext, BaseDados::class.java, "barberflow.db")
-                .addMigrations(MIGRACAO_1_2)
+                .addMigrations(MIGRACAO_1_2, MIGRACAO_2_3)
                 .build().also { instancia = it }
         }
     }

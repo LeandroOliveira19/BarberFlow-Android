@@ -124,6 +124,8 @@ class DadosClienteFragment : Fragment(R.layout.fragment_dados_cliente) {
             fim = inicio.plusMinutes(a.getInt("duracao").toLong()).format(fmt),
             estado = "pendente_verificacao",
             paraNome = paraNome,
+            servicoId = a.getInt("servico_id").takeIf { it > 0 },
+            barbeiroId = a.getInt("barbeiro_id").takeIf { it > 0 },
         )
     }
 

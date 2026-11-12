@@ -21,7 +21,11 @@ data class BarbeariaDto(
     @SerializedName("hora_fecho") val horaFecho: String?,
     @SerializedName("max_dias") val maxDias: Int,
     @SerializedName("codigo_validade_min") val codigoValidadeMin: Int,
-)
+    /** Até quantas horas antes o cliente pode cancelar/remarcar (null = servidor antigo). */
+    @SerializedName("antecedencia_alteracao_horas") val antecedenciaAlteracaoHoras: Int? = null,
+) {
+    fun antecedenciaHoras(): Int = antecedenciaAlteracaoHoras ?: 24
+}
 
 data class ServicoDto(
     @SerializedName("id") val id: Int,
@@ -105,6 +109,19 @@ data class MarcacaoDto(
     @SerializedName("barbearia_slug") val barbeariaSlug: String,
     @SerializedName("barbearia_nome") val barbeariaNome: String,
     @SerializedName("para_nome") val paraNome: String? = null,
+    /** Precisos para remarcar (o serviço fica o mesmo). Null num servidor antigo. */
+    @SerializedName("servico_id") val servicoId: Int? = null,
+    @SerializedName("barbeiro_id") val barbeiroId: Int? = null,
+)
+
+/** Cancelar: o token da marcação prova que é do cliente. */
+data class TokenPedido(@SerializedName("token") val token: String)
+
+data class RemarcarPedido(
+    @SerializedName("token") val token: String,
+    @SerializedName("barbeiro_id") val barbeiroId: Int,
+    @SerializedName("data") val data: String,
+    @SerializedName("hora") val hora: String,
 )
 
 data class ErroCorpo(@SerializedName("erro") val erro: ErroDto?)

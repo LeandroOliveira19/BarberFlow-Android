@@ -16,4 +16,7 @@ data class MarcacaoLocal(
     val estado: String,
     /** Para quem é a marcação (null = para o próprio cliente). Coluna nova na versão 2 da BD. */
     val paraNome: String? = null,
+    /** Serviço e barbeiro (para remarcar). Colunas novas na versão 3; a sincronização preenche-as. */
+    val servicoId: Int? = null,
+    val barbeiroId: Int? = null,
 )
