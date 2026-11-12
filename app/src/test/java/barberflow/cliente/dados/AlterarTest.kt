@@ -52,6 +52,17 @@ class AlterarTest {
         assertEquals(2, dto.barbeiroId)
     }
 
+    /** Revisão final #3: a resposta do remarcar perdeu-se → a sincronização tem de trazer o novo horário. */
+    @Test fun sincronizacao_deteta_horario_mudado_no_servidor() {
+        val local = MarcacaoLocal(1, "tok", "rlbarber", "Corte", "André", "2026-11-20 10:00:00", "2026-11-20 10:30:00", "confirmada",
+            servicoId = 5, barbeiroId = 2)
+        val igual = MarcacaoDto(1, "confirmada", "2026-11-20 10:00:00", "2026-11-20 10:30:00", "Corte", "André", "rlbarber", "RLBarber",
+            servicoId = 5, barbeiroId = 2)
+        assertFalse(horarioMudou(local, igual))
+        assertTrue(horarioMudou(local, igual.copy(inicio = "2026-11-21 11:00:00", fim = "2026-11-21 11:30:00")))
+        assertTrue(horarioMudou(local, igual.copy(barbeiroNome = "Bruno", barbeiroId = 3)))
+    }
+
     @Test fun servidor_antigo_sem_ids_nem_antecedencia() {
         val m = Gson().fromJson("""{"id":1,"estado":"confirmada","inicio":"x","fim":"y","servico_nome":"C","barbeiro_nome":"A",
             "barbearia_slug":"r","barbearia_nome":"R"}""", MarcacaoDto::class.java)

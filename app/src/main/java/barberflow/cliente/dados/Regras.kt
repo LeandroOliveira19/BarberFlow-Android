@@ -1,5 +1,6 @@
 package barberflow.cliente.dados
 
+import barberflow.cliente.dados.api.dto.MarcacaoDto
 import barberflow.cliente.dados.local.MarcacaoLocal
 import barberflow.cliente.tarefas.paraEpochMillis
 import com.google.gson.Gson
@@ -27,6 +28,10 @@ fun podeAlterar(estado: String, inicio: String, agora: String, horas: Int): Bool
 /** Remarcar precisa também do serviço e do barbeiro (marcações antigas só os têm depois de sincronizar). */
 fun podeRemarcar(m: MarcacaoLocal, agora: String, horas: Int): Boolean =
     podeAlterar(m.estado, m.inicio, agora, horas) && m.servicoId != null && m.barbeiroId != null
+
+/** O servidor tem outro horário ou outro barbeiro (ex.: a resposta do remarcar perdeu-se na rede). */
+fun horarioMudou(local: MarcacaoLocal, remoto: MarcacaoDto): Boolean =
+    local.inicio != remoto.inicio || local.fim != remoto.fim || local.barbeiroNome != remoto.barbeiroNome
 
 /** Só uma marcação confirmada mantém o lembrete; cancelada/concluída/expirada já não precisam dele. */
 fun lembreteDeveSerCancelado(estado: String): Boolean = estado != "confirmada"

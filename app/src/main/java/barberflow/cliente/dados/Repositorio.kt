@@ -74,8 +74,11 @@ object Repositorio {
     suspend fun equipa(slug: String): Resultado<List<BarbeiroDto>> = pedido { api.equipa("barbearias/$slug/equipa") }
     suspend fun reviews(slug: String): Resultado<List<ReviewDto>> = pedido { api.reviews("barbearias/$slug/reviews") }
 
-    suspend fun disponibilidade(slug: String, servicoId: Int, barbeiroId: Int, data: String): Resultado<DisponibilidadeDto> =
-        pedido { api.disponibilidade("barbearias/$slug/disponibilidade", servicoId, barbeiroId, data) }
+    /** Ao remarcar, `remarcando` faz o servidor ignorar o horário atual dessa marcação (prova-se com o token dela). */
+    suspend fun disponibilidade(
+        slug: String, servicoId: Int, barbeiroId: Int, data: String, remarcando: MarcacaoLocal? = null,
+    ): Resultado<DisponibilidadeDto> =
+        pedido { api.disponibilidade("barbearias/$slug/disponibilidade", servicoId, barbeiroId, data, remarcando?.id, remarcando?.token) }
 
     suspend fun criarMarcacao(slug: String, p: NovaMarcacaoPedido): Resultado<NovaMarcacaoResposta> =
         pedido { api.criarMarcacao("barbearias/$slug/marcacoes", p) }
@@ -108,6 +111,14 @@ object Repositorio {
                     // v3: marcações guardadas antes de existir o serviço/barbeiro ficam com os ids (para remarcar)
                     if (remoto.servicoId != null && (l.servicoId != remoto.servicoId || l.barbeiroId != remoto.barbeiroId)) {
                         dao.atualizarIds(l.id, remoto.servicoId, remoto.barbeiroId)
+                    }
+                    // Revisão final #3: o horário mudou no servidor (ex.: a resposta do remarcar perdeu-se) → Room e lembrete
+                    if (horarioMudou(l, remoto)) {
+                        dao.atualizarHorario(l.id, remoto.inicio, remoto.fim, remoto.barbeiroId ?: l.barbeiroId, remoto.barbeiroNome)
+                        Lembretes.cancelarLembrete(app, l.id)
+                        if (remoto.estado == "confirmada") {
+                            Lembretes.agendarLembrete(app, l.copy(inicio = remoto.inicio, fim = remoto.fim), prefs.lembreteMinutos)
+                        }
                     }
                     if (remoto.estado != l.estado) {
                         dao.atualizarEstado(l.id, remoto.estado)

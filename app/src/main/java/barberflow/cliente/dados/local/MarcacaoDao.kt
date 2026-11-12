@@ -26,7 +26,7 @@ interface MarcacaoDao {
     suspend fun atualizarEstado(id: Int, estado: String)
 
     @Query("UPDATE marcacoes SET inicio = :inicio, fim = :fim, barbeiroId = :barbeiroId, barbeiroNome = :barbeiroNome WHERE id = :id")
-    suspend fun atualizarHorario(id: Int, inicio: String, fim: String, barbeiroId: Int, barbeiroNome: String)
+    suspend fun atualizarHorario(id: Int, inicio: String, fim: String, barbeiroId: Int?, barbeiroNome: String)
 
     @Query("UPDATE marcacoes SET servicoId = :servicoId, barbeiroId = :barbeiroId WHERE id = :id")
     suspend fun atualizarIds(id: Int, servicoId: Int?, barbeiroId: Int?)

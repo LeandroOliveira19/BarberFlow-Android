@@ -231,7 +231,7 @@ class MarcarFragment : Fragment(R.layout.fragment_marcar) {
         b.semHorarios.isVisible = false
         atualizarContinuar()
         slotsJob = viewLifecycleOwner.lifecycleScope.launch {
-            val r = Repositorio.disponibilidade(slug, s.id, x.id, d.toString())
+            val r = Repositorio.disponibilidade(slug, s.id, x.id, d.toString(), remarcando)
             if (_b == null) return@launch
             b.progresso.isVisible = false
             when (r) {

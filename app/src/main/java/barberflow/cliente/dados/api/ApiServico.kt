@@ -43,6 +43,9 @@ interface ApiServico {
         @Query("servico_id") servicoId: Int,
         @Query("barbeiro_id") barbeiroId: Int,
         @Query("data") data: String,
+        /** Só ao remarcar (null = o Retrofit não envia o parâmetro). */
+        @Query("marcacao_id") marcacaoId: Int? = null,
+        @Query("token") token: String? = null,
     ): Response<DisponibilidadeDto>
 
     @POST("index.php")
