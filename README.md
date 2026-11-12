@@ -27,10 +27,22 @@ Para dar a app a outras pessoas, ver [COMO-INSTALAR-A-APP.md](COMO-INSTALAR-A-AP
 
 Para um **telemóvel físico** com o flavor `local`: põe o IP do PC no `BASE_URL` (app/build.gradle.kts) e em `app/src/local/res/xml/network_security_config.xml`, e arranca o `php -S 0.0.0.0:8080 ...`.
 
+## Cancelar e remarcar
+
+No separador **Marcações**, uma marcação confirmada mostra **Cancelar** e **Remarcar** até X horas antes
+(X = "Cancelar/remarcar na app até" nas Definições da gestão; 24 h por omissão). Fora do prazo aparece
+"Para alterar, contacta a barbearia".
+
+- **Cancelar:** diálogo de confirmação → `POST marcacoes/{id}/cancelar` → Room atualizado e lembrete cancelado.
+- **Remarcar:** abre o separador Marcar em modo remarcar (serviço fixo; escolhe barbeiro, dia e hora; os horários
+  ignoram a própria marcação) → `POST marcacoes/{id}/remarcar` → Room atualizado e lembrete reagendado.
+- A prova de que a marcação é do cliente é o token que a app já guarda; o servidor valida sempre o prazo.
+- O Room está na versão 3 (`servicoId`, `barbeiroId`), com migração a partir da v2.
+
 ## Testes
 
 ```bash
-./gradlew testLocalDebugUnitTest            # 32 testes JVM (DTOs/@SerializedName, erros, formatos, validação, fuso horário)
+./gradlew testLocalDebugUnitTest            # 55 testes JVM (DTOs/@SerializedName, erros, formatos, validação, fuso horário, prazo de cancelar/remarcar)
 ./gradlew connectedLocalDebugAndroidTest    # 3 testes do Room (precisa do emulador ligado)
 ```
 

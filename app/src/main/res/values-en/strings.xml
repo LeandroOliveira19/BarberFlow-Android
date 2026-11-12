@@ -109,6 +109,20 @@
     <string name="notif_cancelada_titulo">Booking cancelled</string>
     <string name="notif_cancelada_texto">Your booking on %1$s was cancelled by the barbershop.</string>
 
+    <string name="alterar_cancelar">Cancel</string>
+    <string name="alterar_remarcar">Reschedule</string>
+    <string name="alterar_confirmar_titulo">Cancel booking?</string>
+    <string name="alterar_confirmar_texto">%1$s at %2$s. This cannot be undone.</string>
+    <string name="alterar_confirmar_sim">Yes, cancel</string>
+    <string name="alterar_manter">Keep it</string>
+    <string name="alterar_cancelada">Booking cancelled.</string>
+    <string name="alterar_remarcada">Booking moved to %1$s at %2$s.</string>
+    <string name="alterar_fora_prazo">To change it, contact the barbershop (Home tab).</string>
+    <string name="remarcar_titulo">Reschedule</string>
+    <string name="remarcar_aviso">Rescheduling: %1$s, %2$s at %3$s. Choose the new barber, day and time.</string>
+    <string name="remarcar_confirmar">Confirm new time</string>
+    <string name="remarcar_desistir">Give up</string>
+
     <string name="tentar_de_novo">Try again</string>
     <string name="cancelar">Cancel</string>
     <string name="sim">Yes</string>
