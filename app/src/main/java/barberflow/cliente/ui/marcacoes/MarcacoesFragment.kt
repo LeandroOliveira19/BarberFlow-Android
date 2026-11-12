@@ -15,6 +15,10 @@ import barberflow.cliente.R
 import barberflow.cliente.dados.Repositorio
 import barberflow.cliente.dados.Resultado
 import barberflow.cliente.dados.local.MarcacaoLocal
+import barberflow.cliente.dados.podeAlterar
+import barberflow.cliente.dados.podeRemarcar
+import barberflow.cliente.tarefas.agoraApi
+import com.google.android.material.snackbar.Snackbar
 import barberflow.cliente.databinding.FragmentMarcacoesBinding
 import barberflow.cliente.databinding.ItemMarcacaoBinding
 import barberflow.cliente.tarefas.Agendador
@@ -63,10 +67,43 @@ class MarcacoesFragment : Fragment(R.layout.fragment_marcacoes) {
         val slug = prefs.slug ?: return
         viewLifecycleOwner.lifecycleScope.launch {
             val lista = Repositorio.marcacoesLocais(slug)
+            // Prazo da barbearia (24 h se a API não o disser ou estiver offline); o servidor volta a validar
+            val horas = (Repositorio.barbeariaAtual() as? Resultado.Ok)?.dados?.antecedenciaHoras() ?: 24
             if (_b == null) return@launch
             b.vazio.isVisible = lista.isEmpty()
-            b.lista.adapter = MarcacoesAdapter(lista)
+            b.lista.adapter = MarcacoesAdapter(lista, horas, agoraApi(), ::confirmarCancelar, ::remarcar)
         }
+    }
+
+    private fun confirmarCancelar(m: MarcacaoLocal) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.alterar_confirmar_titulo)
+            .setMessage(getString(R.string.alterar_confirmar_texto, dataCurta(m.inicio), horaCurta(m.inicio)))
+            .setPositiveButton(R.string.alterar_confirmar_sim) { _, _ -> cancelar(m) }
+            .setNegativeButton(R.string.alterar_manter, null)
+            .show()
+    }
+
+    private fun cancelar(m: MarcacaoLocal) {
+        val ctx = requireContext().applicationContext
+        // No scope da app: rodar o ecrã a meio não deixa o Room por atualizar
+        Repositorio.escopo.launch {
+            val r = Repositorio.cancelar(m)
+            Eventos.emitir(ctx, Eventos.MARCACAO)
+            if (_b == null) return@launch
+            when (r) {
+                is Resultado.Ok -> Snackbar.make(b.root, R.string.alterar_cancelada, Snackbar.LENGTH_LONG).show()
+                is Resultado.Erro -> {
+                    mostrarErro(r.mensagem)
+                    if (r.codigo == "fora_do_prazo" || r.codigo == "estado_invalido") sincronizar()
+                }
+            }
+        }
+    }
+
+    private fun remarcar(m: MarcacaoLocal) {
+        Repositorio.paraRemarcar = m
+        (activity as? MainActivity)?.irPara(R.id.marcarFragment)
     }
 
     private fun sincronizar() {
@@ -123,7 +160,13 @@ class MarcacoesFragment : Fragment(R.layout.fragment_marcacoes) {
     }
 }
 
-class MarcacoesAdapter(private val lista: List<MarcacaoLocal>) : RecyclerView.Adapter<MarcacoesAdapter.ViewHolder>() {
+class MarcacoesAdapter(
+    private val lista: List<MarcacaoLocal>,
+    private val horas: Int,
+    private val agora: String,
+    private val aoCancelar: (MarcacaoLocal) -> Unit,
+    private val aoRemarcar: (MarcacaoLocal) -> Unit,
+) : RecyclerView.Adapter<MarcacoesAdapter.ViewHolder>() {
 
     class ViewHolder(val b: ItemMarcacaoBinding) : RecyclerView.ViewHolder(b.root)
 
@@ -141,6 +184,14 @@ class MarcacoesAdapter(private val lista: List<MarcacaoLocal>) : RecyclerView.Ad
         h.b.estado.setTextColor(cor)
         (h.b.estado.background.mutate() as? GradientDrawable)?.setStroke((1 * ctx.resources.displayMetrics.density).toInt(), cor)
         h.b.root.alpha = if (m.estado == "cancelada" || m.estado == "expirada") 0.55f else 1f
+
+        // Cancelar/remarcar dentro do prazo; confirmada futura fora do prazo → aviso para contactar a barbearia
+        val pode = podeAlterar(m.estado, m.inicio, agora, horas)
+        h.b.acoes.isVisible = pode
+        h.b.botaoRemarcar.isVisible = podeRemarcar(m, agora, horas)
+        h.b.avisoAlterar.isVisible = !pode && m.estado == "confirmada" && m.inicio > agora
+        h.b.botaoCancelar.setOnClickListener { aoCancelar(m) }
+        h.b.botaoRemarcar.setOnClickListener { aoRemarcar(m) }
     }
 
     override fun getItemCount() = lista.size

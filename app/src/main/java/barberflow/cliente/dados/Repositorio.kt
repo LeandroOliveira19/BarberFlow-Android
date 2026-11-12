@@ -45,6 +45,9 @@ object Repositorio {
     var preSelecaoServico: Int? = null
     var preSelecaoBarbeiro: Int? = null
 
+    /** Marcação a remarcar: passada de Marcações para o tab Marcar (mesmo padrão da pré-seleção). */
+    var paraRemarcar: MarcacaoLocal? = null
+
     fun iniciar(ctx: Context) {
         if (::app.isInitialized) return
         app = ctx.applicationContext
@@ -123,7 +126,7 @@ object Repositorio {
     /** Cancela na API; em sucesso grava o estado e cancela o lembrete. */
     suspend fun cancelar(m: MarcacaoLocal): Resultado<MarcacaoLocal> =
         when (val r = pedido { api.cancelar("marcacoes/${m.id}/cancelar", TokenPedido(m.token)) }) {
-            is Resultado.Erro -> r
+            is Resultado.Erro -> r.also(::aoErroDeAlteracao)
             is Resultado.Ok -> {
                 dao.atualizarEstado(m.id, r.dados.estado)
                 Lembretes.cancelarLembrete(app, m.id)
@@ -131,10 +134,15 @@ object Repositorio {
             }
         }
 
+    /** O prazo da barbearia mudou entretanto: esquece os dados em memória para a lista voltar a ler o prazo. */
+    private fun aoErroDeAlteracao(e: Resultado.Erro) {
+        if (e.codigo == "fora_do_prazo") barbeariaCache = null
+    }
+
     /** Remarca na API (mesmo serviço); em sucesso grava o novo horário e reagenda o lembrete. */
     suspend fun remarcar(m: MarcacaoLocal, barbeiroId: Int, data: String, hora: String): Resultado<MarcacaoLocal> =
         when (val r = pedido { api.remarcar("marcacoes/${m.id}/remarcar", RemarcarPedido(m.token, barbeiroId, data, hora)) }) {
-            is Resultado.Erro -> r
+            is Resultado.Erro -> r.also(::aoErroDeAlteracao)
             is Resultado.Ok -> {
                 val d = r.dados
                 val nova = m.copy(inicio = d.inicio, fim = d.fim, barbeiroId = d.barbeiroId ?: barbeiroId,

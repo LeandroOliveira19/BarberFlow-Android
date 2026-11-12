@@ -22,9 +22,16 @@ import barberflow.cliente.dados.Resultado
 import barberflow.cliente.dados.api.dto.BarbeariaDto
 import barberflow.cliente.dados.api.dto.BarbeiroDto
 import barberflow.cliente.dados.api.dto.ServicoDto
+import barberflow.cliente.dados.local.MarcacaoLocal
 import barberflow.cliente.databinding.FragmentMarcarBinding
 import barberflow.cliente.databinding.ItemSlotBinding
+import barberflow.cliente.tarefas.Eventos
 import barberflow.cliente.tarefas.LISBOA
+import barberflow.cliente.tarefas.dataCurta
+import barberflow.cliente.tarefas.horaCurta
+import barberflow.cliente.ui.MainActivity
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 import barberflow.cliente.ui.equipa.carregarFoto
 import barberflow.cliente.ui.formatarDuracao
 import barberflow.cliente.ui.formatarPreco
@@ -54,11 +61,16 @@ class MarcarFragment : Fragment(R.layout.fragment_marcar) {
     private var slotsJob: Job? = null
     private var chaveCarregada: String? = null
 
+    /** Modo remarcar: a marcação confirmada que se está a mudar (null = marcação nova). */
+    private var remarcando: MarcacaoLocal? = null
+    private var remarcarId: Int = -1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         savedInstanceState?.let { s ->
             s.getString("dia")?.let { dia = LocalDate.parse(it) }
             hora = s.getString("hora")
+            remarcarId = s.getInt("remarcar_id", -1)
         }
     }
 
@@ -66,6 +78,7 @@ class MarcarFragment : Fragment(R.layout.fragment_marcar) {
         super.onSaveInstanceState(out)
         dia?.let { out.putString("dia", it.toString()) }
         hora?.let { out.putString("hora", it) }
+        out.putInt("remarcar_id", remarcando?.id ?: remarcarId)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -73,9 +86,34 @@ class MarcarFragment : Fragment(R.layout.fragment_marcar) {
         b.listaSlots.layoutManager = GridLayoutManager(requireContext(), resources.getInteger(R.integer.colunas_slots))
         b.botaoDia.setOnClickListener { escolherDia() }
         b.botaoContinuar.setOnClickListener { continuar() }
+        b.botaoDesistir.setOnClickListener { sairDeRemarcar(irParaMarcacoes = true) }
         chaveCarregada = null
-        if (retomarPendente()) return
+        // Vindo do botão Remarcar (Marcações): entra em modo remarcar com o dia e a hora por escolher
+        Repositorio.paraRemarcar?.let { m ->
+            Repositorio.paraRemarcar = null
+            remarcando = m; remarcarId = m.id; dia = null; hora = null
+        }
+        if (remarcarId <= 0 && retomarPendente()) return
         carregar()
+    }
+
+    private fun mostrarModo() {
+        val m = remarcando
+        b.cartaoRemarcar.isVisible = m != null
+        b.spinnerServico.isEnabled = m == null   // ao remarcar, o serviço fica o mesmo
+        b.botaoContinuar.setText(if (m != null) R.string.remarcar_confirmar else R.string.marcar_continuar)
+        if (m != null) b.avisoRemarcar.text = getString(R.string.remarcar_aviso, m.servicoNome, dataCurta(m.inicio), horaCurta(m.inicio))
+        (activity as? AppCompatActivity)?.supportActionBar?.title = getString(if (m != null) R.string.remarcar_titulo else R.string.nav_marcar)
+    }
+
+    private fun sairDeRemarcar(irParaMarcacoes: Boolean) {
+        remarcando = null; remarcarId = -1; dia = null; hora = null
+        if (_b == null) return
+        b.botaoDia.setText(R.string.marcar_escolher_dia)
+        b.listaSlots.adapter = null
+        mostrarModo()
+        atualizarContinuar()
+        if (irParaMarcacoes) (activity as? MainActivity)?.irPara(R.id.marcacoesFragment)
     }
 
     /**
@@ -100,7 +138,13 @@ class MarcarFragment : Fragment(R.layout.fragment_marcar) {
             val rs = async { Repositorio.servicos(slug) }
             val re = async { Repositorio.equipa(slug) }
             val (b1, s1, e1) = Triple(rb.await(), rs.await(), re.await())
+            // Depois de rodar o ecrã só sobra o id: volta a ler a marcação do Room
+            if (remarcando == null && remarcarId > 0) {
+                remarcando = Repositorio.dao.obter(remarcarId)?.takeIf { it.servicoId != null }
+                if (remarcando == null) remarcarId = -1
+            }
             if (_b == null) return@launch
+            mostrarModo()
             b.progresso.isVisible = false
             val erro = listOf(b1, s1, e1).filterIsInstance<Resultado.Erro>().firstOrNull()
             if (erro != null) { mostrarErro(erro.mensagem) { carregar() }; return@launch }
@@ -122,8 +166,8 @@ class MarcarFragment : Fragment(R.layout.fragment_marcar) {
         b.spinnerBarbeiro.adapter = ArrayAdapter(ctx, android.R.layout.simple_spinner_dropdown_item, barbeiros.map { it.nome })
 
         // Pré-seleção vinda de Serviços ou do detalhe do barbeiro (revisão #4: chega pelo tab, não por argumentos)
-        val svPre = Repositorio.preSelecaoServico ?: arguments?.getInt("servico_id", -1)
-        val bbPre = Repositorio.preSelecaoBarbeiro ?: arguments?.getInt("barbeiro_id", -1)
+        val svPre = remarcando?.servicoId ?: Repositorio.preSelecaoServico ?: arguments?.getInt("servico_id", -1)
+        val bbPre = remarcando?.barbeiroId ?: Repositorio.preSelecaoBarbeiro ?: arguments?.getInt("barbeiro_id", -1)
         Repositorio.preSelecaoServico = null
         Repositorio.preSelecaoBarbeiro = null
         servicos.indexOfFirst { it.id == svPre }.takeIf { it >= 0 }?.let { b.spinnerServico.setSelection(it) }
@@ -212,6 +256,7 @@ class MarcarFragment : Fragment(R.layout.fragment_marcar) {
         val x = barbeiros.getOrNull(b.spinnerBarbeiro.selectedItemPosition) ?: return
         val d = dia ?: return
         val h = hora ?: return
+        remarcando?.let { m -> confirmarRemarcacao(m, x.id, d, h); return }
         findNavController().navigate(
             R.id.action_marcar_para_dados,
             bundleOf(
@@ -220,6 +265,34 @@ class MarcarFragment : Fragment(R.layout.fragment_marcar) {
                 "data" to d.toString(), "hora" to h,
             ),
         )
+    }
+
+    /** Modo remarcar: muda a mesma marcação (sem dados do cliente nem código) e volta às Marcações. */
+    private fun confirmarRemarcacao(m: MarcacaoLocal, barbeiroId: Int, d: LocalDate, h: String) {
+        val ctx = requireContext().applicationContext
+        b.botaoContinuar.isEnabled = false
+        // No scope da app: rodar o ecrã a meio não deixa o Room nem o lembrete por atualizar
+        Repositorio.escopo.launch {
+            val r = Repositorio.remarcar(m, barbeiroId, d.toString(), h)
+            Eventos.emitir(ctx, Eventos.MARCACAO)
+            if (_b == null) return@launch
+            when (r) {
+                is Resultado.Ok -> {
+                    Snackbar.make(b.root, getString(R.string.alterar_remarcada, dataCurta(r.dados.inicio), horaCurta(r.dados.inicio)),
+                        Snackbar.LENGTH_LONG).show()
+                    sairDeRemarcar(irParaMarcacoes = true)
+                }
+                is Resultado.Erro -> {
+                    mostrarErro(r.mensagem)
+                    when (r.codigo) {
+                        // Já não dá para alterar: sincroniza e volta à lista
+                        "fora_do_prazo", "estado_invalido" -> { Repositorio.sincronizar(); sairDeRemarcar(irParaMarcacoes = true) }
+                        "slot_ocupado" -> { hora = null; carregarSlots() }
+                        else -> atualizarContinuar()
+                    }
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {

@@ -16,6 +16,31 @@
             android:orientation="vertical"
             android:padding="16dp">
 
+            <!-- Modo remarcar: o que se está a mudar e como desistir -->
+            <LinearLayout
+                android:id="@+id/cartaoRemarcar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/avisoRemarcar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/bf_dourado" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/botaoDesistir"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/remarcar_desistir" />
+            </LinearLayout>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

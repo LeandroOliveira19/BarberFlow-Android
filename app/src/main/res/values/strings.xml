@@ -121,6 +121,21 @@
     <string name="notif_cancelada_titulo">Marcação cancelada</string>
     <string name="notif_cancelada_texto">A tua marcação de %1$s foi cancelada pela barbearia.</string>
 
+    <!-- Cancelar e remarcar -->
+    <string name="alterar_cancelar">Cancelar</string>
+    <string name="alterar_remarcar">Remarcar</string>
+    <string name="alterar_confirmar_titulo">Cancelar marcação?</string>
+    <string name="alterar_confirmar_texto">%1$s às %2$s. Esta ação não pode ser desfeita.</string>
+    <string name="alterar_confirmar_sim">Sim, cancelar</string>
+    <string name="alterar_manter">Manter</string>
+    <string name="alterar_cancelada">Marcação cancelada.</string>
+    <string name="alterar_remarcada">Marcação remarcada para %1$s às %2$s.</string>
+    <string name="alterar_fora_prazo">Para alterar, contacta a barbearia (separador Início).</string>
+    <string name="remarcar_titulo">Remarcar</string>
+    <string name="remarcar_aviso">A remarcar: %1$s, %2$s às %3$s. Escolhe o novo barbeiro, dia e hora.</string>
+    <string name="remarcar_confirmar">Confirmar novo horário</string>
+    <string name="remarcar_desistir">Desistir</string>
+
     <!-- Genéricos -->
     <string name="tentar_de_novo">Tentar de novo</string>
     <string name="cancelar">Cancelar</string>
