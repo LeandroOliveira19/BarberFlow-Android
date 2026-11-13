@@ -1,7 +1,16 @@
 # BarberFlow — app Android (cliente)
 
-App nativa em Kotlin para os clientes de uma barbearia BarberFlow: escolher a barbearia, ver serviços/equipa/reviews, marcar com código de confirmação por email, ver as marcações e receber lembretes.
-Fala com a API JSON do backend PHP (`api/v1` no repositório web, branch `api-v1`).
+App nativa em Kotlin para os clientes de uma barbearia BarberFlow: escolher a barbearia, ver serviços/equipa/reviews, marcar com código de confirmação por email, ver as marcações, cancelar/remarcar e receber lembretes.
+Fala com a API JSON do backend PHP: `api/v1` no repositório web **[LeandroOliveira19/BarberFlow](https://github.com/LeandroOliveira19/BarberFlow)**.
+
+**UC:** Programação Mobile · **ESAN — Universidade de Aveiro** · **Grupo 09**
+
+## Para o professor
+
+- **Correr:** abrir o projeto no Android Studio, variante **`uaDebug`** (usa o servidor da UA, não precisa de XAMPP) → ▶ Run. A barbearia já vem fixa (RL Barber).
+- **"Login" do cliente:** a app não usa senha. O cliente identifica-se ao fazer a 1.ª marcação (nome, telemóvel, email) e confirma com um **código de 6 dígitos**. No servidor da UA o email não sai, por isso o código aparece no ecrã. A sessão fica guardada (SharedPreferences + Room) e o botão **Terminar sessão** no separador Marcações faz o logout.
+- **Utilizador de teste:** qualquer nome/telemóvel/email válidos servem (ex.: `Professor Teste`, `912345678`, `professor@example.com`); a partir daí a app lembra-se dele. As contas com senha (gestor/barbeiro) são da área web, ver o README do repositório web.
+- **Testes unitários:** `./gradlew testLocalDebugUnitTest` (55 testes).
 
 ## Como correr (emulador, contra a API local)
 
