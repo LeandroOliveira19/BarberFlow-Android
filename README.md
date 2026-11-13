@@ -29,7 +29,7 @@ Para um **telemóvel físico** com o flavor `local`: põe o IP do PC no `BASE_UR
 
 ## Cancelar e remarcar
 
-No separador **Marcações**, uma marcação confirmada mostra **Cancelar** e **Remarcar** até X horas antes
+No separador Marcações, uma marcação confirmada mostra Cancelar e Remarcar até X horas antes
 (X = "Cancelar/remarcar na app até" nas Definições da gestão; 24 h por omissão). Fora do prazo aparece
 "Para alterar, contacta a barbearia".
 
