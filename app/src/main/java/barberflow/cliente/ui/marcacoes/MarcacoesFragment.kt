@@ -1,7 +1,9 @@
 package barberflow.cliente.ui.marcacoes
 
 import android.content.BroadcastReceiver
+import android.content.Intent
 import android.graphics.drawable.GradientDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +16,10 @@ import androidx.recyclerview.widget.RecyclerView
 import barberflow.cliente.R
 import barberflow.cliente.dados.Repositorio
 import barberflow.cliente.dados.Resultado
+import barberflow.cliente.dados.api.dto.BarbeariaDto
+import barberflow.cliente.dados.numeroWhatsApp
+import barberflow.cliente.dados.podeContactar
+import barberflow.cliente.dados.podeMarcarOutraVez
 import barberflow.cliente.dados.local.MarcacaoLocal
 import barberflow.cliente.dados.podeAlterar
 import barberflow.cliente.dados.podeRemarcar
@@ -26,6 +32,7 @@ import barberflow.cliente.tarefas.Eventos
 import barberflow.cliente.tarefas.dataCurta
 import barberflow.cliente.tarefas.horaCurta
 import barberflow.cliente.ui.MainActivity
+import barberflow.cliente.ui.abrir
 import barberflow.cliente.ui.corEstado
 import barberflow.cliente.ui.diaEMes
 import barberflow.cliente.ui.mostrarErro
@@ -70,10 +77,11 @@ class MarcacoesFragment : Fragment(R.layout.fragment_marcacoes) {
         viewLifecycleOwner.lifecycleScope.launch {
             val lista = Repositorio.marcacoesLocais(slug)
             // Prazo da barbearia (24 h se a API não o disser ou estiver offline); o servidor volta a validar
-            val horas = (Repositorio.barbeariaAtual() as? Resultado.Ok)?.dados?.antecedenciaHoras() ?: 24
+            val barbearia = (Repositorio.barbeariaAtual() as? Resultado.Ok)?.dados
+            val horas = barbearia?.antecedenciaHoras() ?: 24
             if (_b == null) return@launch
             b.vazio.isVisible = lista.isEmpty()
-            b.lista.adapter = MarcacoesAdapter(lista, horas, agoraApi(), ::confirmarCancelar, ::remarcar)
+            b.lista.adapter = MarcacoesAdapter(lista, horas, agoraApi(), barbearia, ::confirmarCancelar, ::remarcar, ::marcarOutraVez)
         }
     }
 
@@ -105,6 +113,13 @@ class MarcacoesFragment : Fragment(R.layout.fragment_marcacoes) {
 
     private fun remarcar(m: MarcacaoLocal) {
         Repositorio.paraRemarcar = m
+        (activity as? MainActivity)?.irPara(R.id.marcarFragment)
+    }
+
+    /** Mesmo serviço e barbeiro já escolhidos no Marcar; o cliente só escolhe o dia e a hora. */
+    private fun marcarOutraVez(m: MarcacaoLocal) {
+        Repositorio.preSelecaoServico = m.servicoId
+        Repositorio.preSelecaoBarbeiro = m.barbeiroId
         (activity as? MainActivity)?.irPara(R.id.marcarFragment)
     }
 
@@ -166,8 +181,11 @@ class MarcacoesAdapter(
     private val lista: List<MarcacaoLocal>,
     private val horas: Int,
     private val agora: String,
+    /** Contactos da barbearia (null sem rede e sem cache: os botões de contacto não aparecem). */
+    private val barbearia: BarbeariaDto?,
     private val aoCancelar: (MarcacaoLocal) -> Unit,
     private val aoRemarcar: (MarcacaoLocal) -> Unit,
+    private val aoMarcarOutraVez: (MarcacaoLocal) -> Unit,
 ) : RecyclerView.Adapter<MarcacoesAdapter.ViewHolder>() {
 
     class ViewHolder(val b: ItemMarcacaoBinding) : RecyclerView.ViewHolder(b.root)
@@ -189,7 +207,8 @@ class MarcacoesAdapter(
         val cor = ctx.getColor(corEstado(m.estado))
         h.b.estado.setTextColor(cor)
         (h.b.estado.background.mutate() as? GradientDrawable)?.setStroke((1 * ctx.resources.displayMetrics.density).toInt(), cor)
-        h.b.root.alpha = if (m.estado == "cancelada" || m.estado == "expirada") 0.55f else 1f
+        // Só a linha da data fica esbatida: o "Marcar outra vez" continua com ar de botão ativo
+        h.b.topo.alpha = if (m.estado == "cancelada" || m.estado == "expirada") 0.55f else 1f
 
         // Cancelar/remarcar dentro do prazo; confirmada futura fora do prazo → aviso para contactar a barbearia
         val pode = podeAlterar(m.estado, m.inicio, agora, horas)
@@ -198,6 +217,32 @@ class MarcacoesAdapter(
         h.b.avisoAlterar.isVisible = !pode && m.estado == "confirmada" && m.inicio > agora
         h.b.botaoCancelar.setOnClickListener { aoCancelar(m) }
         h.b.botaoRemarcar.setOnClickListener { aoRemarcar(m) }
+
+        mostrarContactos(h.b, m)
+        h.b.botaoOutraVez.isVisible = podeMarcarOutraVez(m, agora)
+        h.b.botaoOutraVez.setOnClickListener { aoMarcarOutraVez(m) }
+    }
+
+    /** Ligar, WhatsApp e Mapa (Intents implícitos), só numa marcação que ainda vai acontecer. */
+    private fun mostrarContactos(b: ItemMarcacaoBinding, m: MarcacaoLocal) {
+        val ctx = b.root.context
+        val d = barbearia
+        val tel = d?.telemovelContacto?.takeIf { it.isNotBlank() }
+        val whatsapp = numeroWhatsApp(tel)
+        val morada = d?.morada?.takeIf { it.isNotBlank() }
+        b.botaoLigar.isVisible = tel != null
+        b.botaoWhatsApp.isVisible = whatsapp != null
+        b.botaoMapa.isVisible = morada != null
+        b.contactos.isVisible = d != null && podeContactar(m, agora) && (tel != null || morada != null)
+        if (d == null) return
+        b.botaoLigar.setOnClickListener { ctx.abrir(Intent(Intent.ACTION_DIAL, Uri.parse("tel:$tel"))) }
+        b.botaoWhatsApp.setOnClickListener {
+            val texto = ctx.getString(R.string.marcacao_whatsapp_texto, dataCurta(m.inicio), horaCurta(m.inicio), m.servicoNome, m.barbeiroNome)
+            ctx.abrir(Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/$whatsapp?text=" + Uri.encode(texto))))
+        }
+        b.botaoMapa.setOnClickListener {
+            ctx.abrir(Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + Uri.encode(d.nome + ", " + morada))))
+        }
     }
 
     override fun getItemCount() = lista.size

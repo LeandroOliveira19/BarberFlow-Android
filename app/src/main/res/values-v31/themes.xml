@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Ecrã de abertura do sistema (Android 12+): fundo preto e o anel dourado animado -->
+    <style name="Theme.BarberFlow.Abertura" parent="Theme.BarberFlow">
+        <item name="android:windowSplashScreenBackground">@color/bf_fundo</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_abertura_animada</item>
+        <item name="android:windowSplashScreenAnimationDuration">700</item>
+    </style>
+</resources>

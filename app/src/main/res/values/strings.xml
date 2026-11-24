@@ -170,4 +170,13 @@
     <string name="verificar_adicionar_calendario">Adicionar ao calendário</string>
     <string name="verificar_ver_marcacoes">Ver as minhas marcações</string>
     <string name="verificar_evento_titulo">%1$s · %2$s</string>
+    <string name="marcacao_contactar">Precisas de falar com a barbearia?</string>
+    <string name="marcacao_whatsapp">WhatsApp</string>
+    <string name="marcacao_whatsapp_texto">Olá! Tenho uma marcação a %1$s às %2$s (%3$s com %4$s).</string>
+    <string name="marcacao_outra_vez">Marcar outra vez</string>
+    <string name="inicio_proxima">A tua próxima marcação</string>
+    <string name="inicio_proxima_hoje">Hoje às %1$s</string>
+    <string name="inicio_proxima_amanha">Amanhã às %1$s</string>
+    <string name="inicio_proxima_dia">%1$s às %2$s</string>
+    <string name="inicio_proxima_ver">Ver marcação</string>
 </resources>

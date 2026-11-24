@@ -60,6 +60,9 @@
         <item name="chipEspecialidadeStyle">@style/BarberFlow.Chip.Especialidade</item>
     </style>
 
+    <!-- Atividade de entrada: no Android 12+ junta o ecrã de abertura (values-v31); antes disso é só o fundo preto -->
+    <style name="Theme.BarberFlow.Abertura" parent="Theme.BarberFlow" />
+
     <!-- Texto base (TextView sem aparência própria, listas, spinner) -->
     <style name="BarberFlow.Texto.Base" parent="TextAppearance.AppCompat">
         <item name="android:fontFamily">@font/inter</item>

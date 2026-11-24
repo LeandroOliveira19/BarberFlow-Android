@@ -21,14 +21,23 @@ import barberflow.cliente.R
 import barberflow.cliente.dados.Repositorio
 import barberflow.cliente.dados.Resultado
 import barberflow.cliente.dados.api.dto.BarbeariaDto
+import barberflow.cliente.dados.diasAte
+import barberflow.cliente.dados.proximaMarcacao
 import barberflow.cliente.databinding.FragmentInicioBinding
 import barberflow.cliente.tarefas.Eventos
 import barberflow.cliente.tarefas.Notificacoes
+import barberflow.cliente.tarefas.agoraApi
+import barberflow.cliente.tarefas.dataCurta
+import barberflow.cliente.tarefas.horaCurta
+import barberflow.cliente.ui.MainActivity
 import barberflow.cliente.ui.OnboardingActivity
 import barberflow.cliente.ui.abrir
 import barberflow.cliente.ui.animarPalavras
+import barberflow.cliente.ui.diaEMes
 import barberflow.cliente.ui.mostrarErro
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 /** Tab Início: dados e contactos da barbearia, preferência de lembrete e reviews do Google (só leitura). */
 class InicioFragment : Fragment(R.layout.fragment_inicio) {
@@ -51,6 +60,7 @@ class InicioFragment : Fragment(R.layout.fragment_inicio) {
         b.botaoMudarBarbearia.isVisible = BuildConfig.SLUG_FIXO.isBlank()
         b.botaoMudarBarbearia.setOnClickListener { mudarBarbearia() }
         b.botaoAtivarNotificacoes.setOnClickListener { ativarNotificacoes() }
+        b.cartaoProxima.setOnClickListener { (activity as? MainActivity)?.irPara(R.id.marcacoesFragment) }
         atualizarSaudacao()
         carregar()
     }
@@ -58,8 +68,12 @@ class InicioFragment : Fragment(R.layout.fragment_inicio) {
     override fun onStart() {
         super.onStart()
         // BroadcastReceiver em runtime: a saudação muda logo que a sessão muda noutro ecrã
-        receiver = Eventos.registar(requireContext()) { tipo -> if (tipo == Eventos.SESSAO) atualizarSaudacao() }
+        receiver = Eventos.registar(requireContext()) { tipo ->
+            if (tipo == Eventos.SESSAO) atualizarSaudacao()
+            mostrarProxima()
+        }
         atualizarAvisoNotificacoes()
+        mostrarProxima()
     }
 
     override fun onStop() {
@@ -108,6 +122,36 @@ class InicioFragment : Fragment(R.layout.fragment_inicio) {
         b.botaoMapa.setOnClickListener {
             requireContext().abrir(Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + Uri.encode(d.nome + ", " + d.morada))))
         }
+    }
+
+    /** Cartão "A tua próxima marcação": hoje, amanhã ou a data, com o serviço e o barbeiro. */
+    private fun mostrarProxima() {
+        val slug = prefs.slug ?: return
+        viewLifecycleOwner.lifecycleScope.launch {
+            val agora = agoraApi()
+            val m = proximaMarcacao(Repositorio.marcacoesLocais(slug), agora)
+            if (_b == null) return@launch
+            b.cartaoProxima.isVisible = m != null
+            if (m == null) return@launch
+            val (dia, mes) = diaEMes(m.inicio, resources.configuration.locales[0])
+            b.proximaDia.text = dia
+            b.proximaMes.text = mes
+            val hora = horaCurta(m.inicio)
+            b.proximaQuando.text = when (diasAte(m.inicio, agora)) {
+                0L -> getString(R.string.inicio_proxima_hoje, hora)
+                1L -> getString(R.string.inicio_proxima_amanha, hora)
+                in 2L..6L -> getString(R.string.inicio_proxima_dia, diaDaSemana(m.inicio), hora)
+                else -> getString(R.string.inicio_proxima_dia, dataCurta(m.inicio), hora)
+            }
+            b.proximaServico.text = getString(R.string.marcacao_com, m.servicoNome, m.barbeiroNome)
+        }
+    }
+
+    /** "2026-11-26 09:15:00" → "Quinta-feira" (na língua do telemóvel). */
+    private fun diaDaSemana(inicio: String): String {
+        val locale = resources.configuration.locales[0]
+        return LocalDate.parse(inicio.take(10)).format(DateTimeFormatter.ofPattern("EEEE", locale))
+            .replaceFirstChar { it.titlecase(locale) }
     }
 
     private fun rotuloDias(dias: List<Int>): String {

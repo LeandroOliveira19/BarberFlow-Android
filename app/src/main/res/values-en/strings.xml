@@ -156,4 +156,13 @@
     <string name="verificar_adicionar_calendario">Add to calendar</string>
     <string name="verificar_ver_marcacoes">See my bookings</string>
     <string name="verificar_evento_titulo">%1$s · %2$s</string>
+    <string name="marcacao_contactar">Need to talk to the barbershop?</string>
+    <string name="marcacao_whatsapp">WhatsApp</string>
+    <string name="marcacao_whatsapp_texto">Hi! I have an appointment on %1$s at %2$s (%3$s with %4$s).</string>
+    <string name="marcacao_outra_vez">Book again</string>
+    <string name="inicio_proxima">Your next appointment</string>
+    <string name="inicio_proxima_hoje">Today at %1$s</string>
+    <string name="inicio_proxima_amanha">Tomorrow at %1$s</string>
+    <string name="inicio_proxima_dia">%1$s at %2$s</string>
+    <string name="inicio_proxima_ver">View appointment</string>
 </resources>

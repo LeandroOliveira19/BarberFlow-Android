@@ -51,7 +51,7 @@ No separador Marcações, uma marcação confirmada mostra Cancelar e Remarcar a
 ## Testes
 
 ```bash
-./gradlew testLocalDebugUnitTest            # 72 testes JVM (DTOs/@SerializedName, erros, formatos, validação, fuso horário, prazo de cancelar/remarcar, efeito palavra a palavra, apresentação dos ecrãs, carrossel de dias e manhã/tarde)
+./gradlew testLocalDebugUnitTest            # 79 testes JVM (DTOs/@SerializedName, erros, formatos, validação, fuso horário, prazo de cancelar/remarcar, efeito palavra a palavra, apresentação dos ecrãs, carrossel de dias e manhã/tarde, atalhos das marcações)
 ./gradlew connectedLocalDebugAndroidTest    # 3 testes do Room (precisa do emulador ligado)
 ```
 
@@ -61,7 +61,7 @@ No separador Marcações, uma marcação confirmada mostra Cancelar e Remarcar a
 |---|---|
 | ViewBinding (Activity `by lazy` / Fragment `bind`) | `ui/MainActivity.kt`, todos os `*Fragment.kt` |
 | BottomNavigationView + Fragments + NavController | `ui/MainActivity.kt`, `res/navigation/nav_graph.xml`, `res/menu/menu_inferior.xml` |
-| Intent explícito / implícito (DIAL, SENDTO, VIEW, INSERT no calendário, deep link) | `ui/OnboardingActivity.kt`, `ui/inicio/InicioFragment.kt`, `ui/equipa/BarbeiroDetalheFragment.kt`, `ui/marcar/VerificarFragment.kt` (adicionar ao calendário) |
+| Intent explícito / implícito (DIAL, SENDTO, VIEW, INSERT no calendário, WhatsApp, deep link) | `ui/OnboardingActivity.kt`, `ui/inicio/InicioFragment.kt`, `ui/equipa/BarbeiroDetalheFragment.kt`, `ui/marcar/VerificarFragment.kt` (adicionar ao calendário), `ui/marcacoes/MarcacoesFragment.kt` (ligar, WhatsApp e mapa numa marcação por realizar) |
 | RecyclerView + Adapter + ViewHolder (Linear e Grid) | `ui/servicos`, `ui/equipa`, `ui/marcar/MarcarFragment.kt` (SlotsAdapter), `ui/marcacoes` |
 | Spinner + onItemSelectedListener + setImageResource | `ui/marcar/MarcarFragment.kt`, `ui/inicio/InicioFragment.kt` |
 | DatePickerDialog | `ui/marcar/MarcarFragment.kt` ("Outra data" no fim do carrossel de dias) |
@@ -85,7 +85,13 @@ No separador Marcações, uma marcação confirmada mostra Cancelar e Remarcar a
 A app usa o mesmo visual do site (tema Clássico) e da gestão do BarberFlow:
 - preto, branco-pérola (`#F5F5F7`) e dourado (`#CDA47C`);
 - cantos de 24dp e botões em pílula;
-- fumo dourado animado e texto palavra a palavra no Início.
+- fumo dourado animado e texto palavra a palavra no Início;
+- ícone adaptativo (tesoura num anel dourado) e ecrã de abertura do Android 12+ com o anel animado (`values-v31/themes.xml`).
+
+Atalhos para facilitar o uso:
+- **Início:** cartão "A tua próxima marcação" (hoje, amanhã ou o dia da semana), que abre as Marcações;
+- **Marcações por realizar:** Ligar, WhatsApp (só se o contacto for um telemóvel) e Mapa;
+- **Marcações passadas ou canceladas:** "Marcar outra vez", que abre o Marcar com o mesmo serviço e barbeiro.
 
 Fontes incluídas em `app/src/main/res/font/`, ambas sob a [SIL Open Font License 1.1](https://openfontlicense.org), descarregadas do Google Fonts:
 - **Inter**, de Rasmus Andersson;
