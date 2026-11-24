@@ -57,6 +57,7 @@
         <item name="snackbarStyle">@style/BarberFlow.Aviso</item>
         <item name="snackbarTextViewStyle">@style/BarberFlow.Aviso.Texto</item>
         <item name="shapeAppearanceCornerSmall">@style/BarberFlow.Forma.Campo</item>
+        <item name="chipEspecialidadeStyle">@style/BarberFlow.Chip.Especialidade</item>
     </style>
 
     <!-- Texto base (TextView sem aparência própria, listas, spinner) -->
@@ -188,6 +189,18 @@
     </style>
     <style name="BarberFlow.Forma.Campo" parent="ShapeAppearance.Material3.Corner.Small">
         <item name="cornerSize">14dp</item>
+    </style>
+
+    <!-- Pílula de especialidade (perfil do barbeiro): dourado suave, só leitura -->
+    <style name="BarberFlow.Chip.Especialidade" parent="Widget.Material3.Chip.Suggestion">
+        <item name="chipBackgroundColor">@color/bf_dourado_suave</item>
+        <item name="chipStrokeWidth">0dp</item>
+        <item name="android:textColor">@color/bf_dourado</item>
+        <item name="android:textAppearance">@style/BarberFlow.Texto.LabelLarge</item>
+        <item name="shapeAppearance">@style/BarberFlow.Forma.Pilula</item>
+        <item name="android:clickable">false</item>
+        <item name="android:focusable">false</item>
+        <item name="ensureMinTouchTargetSize">false</item>
     </style>
 
     <!-- Avisos (Snackbar) em pílula de vidro escuro, como na gestão -->

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pílula dourada suave (especialidades, bloco de data) -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="#24CDA47C" />
+    <corners android:radius="999dp" />
+</shape>

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Perfil público do barbeiro: foto grande com o nome por cima, especialidades em pílulas, "Sobre" num card e "Marcar com …" -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -9,73 +10,108 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/foto"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:background="@color/bf_superficie_alta"
-            android:contentDescription="@string/foto_barbeiro"
-            android:scaleType="centerCrop" />
+            android:layout_height="340dp">
+
+            <ImageView
+                android:id="@+id/foto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_iniciais"
+                android:contentDescription="@string/foto_barbeiro"
+                android:scaleType="centerCrop" />
+
+            <TextView
+                android:id="@+id/iniciais"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="40dp"
+                android:fontFamily="@font/cinzel_semibold"
+                android:importantForAccessibility="no"
+                android:textColor="@color/bf_dourado"
+                android:textSize="72sp"
+                android:visibility="gone" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/bg_degrade_foto" />
+
+            <TextView
+                android:id="@+id/nome"
+                style="@style/BarberFlow.Titulo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:paddingHorizontal="20dp"
+                android:paddingBottom="16dp"
+                android:textSize="30sp" />
+        </FrameLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="24dp">
 
-            <TextView
-                android:id="@+id/nome"
-                style="@style/BarberFlow.Titulo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/tituloEspecialidades"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/detalhe_especialidades"
-                android:textColor="@color/bf_texto_secundario"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/especialidades"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/bf_dourado"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/tituloBio"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/detalhe_sobre"
-                android:textColor="@color/bf_texto_secundario"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/bio"
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipsEspecialidades"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:lineSpacingExtra="4dp"
-                android:textColor="@color/bf_texto" />
+                android:layout_marginTop="4dp"
+                app:chipSpacingHorizontal="8dp" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/botaoInstagram"
-                style="@style/Widget.Material3.Button.OutlinedButton"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cartaoBio"
+                style="@style/BarberFlow.Cartao"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="@string/detalhe_instagram"
-                app:icon="@drawable/ic_link" />
+                android:layout_marginTop="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="18dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/detalhe_sobre"
+                        android:textAppearance="?attr/textAppearanceTitleMedium"
+                        android:textColor="@color/bf_texto" />
+
+                    <TextView
+                        android:id="@+id/bio"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:lineSpacingExtra="4dp"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:textColor="@color/bf_texto_secundario" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/botaoMarcar"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="24dp"
+                android:textSize="16sp"
                 app:icon="@drawable/ic_marcar" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/botaoInstagram"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/detalhe_instagram"
+                app:icon="@drawable/ic_link" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

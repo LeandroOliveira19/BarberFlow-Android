@@ -6,6 +6,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import barberflow.cliente.dados.api.dto.ReviewDto
 import barberflow.cliente.databinding.ItemReviewBinding
+import barberflow.cliente.ui.iniciais
 
 class ReviewsAdapter(private val lista: List<ReviewDto>) : RecyclerView.Adapter<ReviewsAdapter.ViewHolder>() {
 
@@ -17,6 +18,7 @@ class ReviewsAdapter(private val lista: List<ReviewDto>) : RecyclerView.Adapter<
     override fun onBindViewHolder(h: ViewHolder, pos: Int) {
         val r = lista[pos]
         h.b.autor.text = r.autor
+        h.b.inicial.text = iniciais(r.autor).take(1)
         h.b.estrelas.rating = r.estrelas.toFloat()
         h.b.texto.text = r.texto.orEmpty()
         h.b.texto.isVisible = !r.texto.isNullOrBlank()

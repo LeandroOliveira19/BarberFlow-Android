@@ -15,6 +15,7 @@ import barberflow.cliente.dados.api.dto.BarbeiroDto
 import barberflow.cliente.databinding.FragmentBarbeiroDetalheBinding
 import barberflow.cliente.ui.abrir
 import barberflow.cliente.ui.urlInstagram
+import com.google.android.material.chip.Chip
 import com.google.gson.Gson
 
 /** Perfil público do barbeiro (foto, especialidades, bio, Instagram). */
@@ -28,17 +29,19 @@ class BarbeiroDetalheFragment : Fragment(R.layout.fragment_barbeiro_detalhe) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val b = FragmentBarbeiroDetalheBinding.bind(view)
         val x = Gson().fromJson(requireArguments().getString("barbeiro"), BarbeiroDto::class.java)
-        (activity as? AppCompatActivity)?.supportActionBar?.title = x.nome
+        // O nome já aparece grande por cima da foto: a barra de cima fica só com a seta de voltar
+        (activity as? AppCompatActivity)?.supportActionBar?.title = ""
 
         b.foto.transitionName = "foto_${x.id}"
-        carregarFoto(b.foto, x.fotoUrl)
+        carregarFotoOuIniciais(b.foto, b.iniciais, x)
         b.nome.text = x.nome
-        b.especialidades.text = x.especialidades.orEmpty()
-        b.tituloEspecialidades.isVisible = !x.especialidades.isNullOrBlank()
-        b.especialidades.isVisible = !x.especialidades.isNullOrBlank()
+        // Especialidades em pílulas douradas (separadas por vírgulas no perfil)
+        x.especialidades.orEmpty().split(',').map { it.trim() }.filter { it.isNotEmpty() }.forEach { esp ->
+            b.chipsEspecialidades.addView(Chip(requireContext(), null, R.attr.chipEspecialidadeStyle).apply { text = esp })
+        }
+        b.chipsEspecialidades.isVisible = b.chipsEspecialidades.childCount > 0
         b.bio.text = x.bio.orEmpty()
-        b.tituloBio.isVisible = !x.bio.isNullOrBlank()
-        b.bio.isVisible = !x.bio.isNullOrBlank()
+        b.cartaoBio.isVisible = !x.bio.isNullOrBlank()
 
         b.botaoInstagram.isVisible = !x.instagram.isNullOrBlank()
         b.botaoInstagram.setOnClickListener {

@@ -27,6 +27,7 @@ import barberflow.cliente.tarefas.dataCurta
 import barberflow.cliente.tarefas.horaCurta
 import barberflow.cliente.ui.MainActivity
 import barberflow.cliente.ui.corEstado
+import barberflow.cliente.ui.diaEMes
 import barberflow.cliente.ui.mostrarErro
 import barberflow.cliente.ui.rotuloEstado
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -48,6 +49,7 @@ class MarcacoesFragment : Fragment(R.layout.fragment_marcacoes) {
         b.refresh.setColorSchemeResources(R.color.bf_dourado)
         b.refresh.setOnRefreshListener { sincronizar() }
         b.botaoSessao.setOnClickListener { alternarSessao() }
+        b.botaoMarcarAgora.setOnClickListener { (activity as? MainActivity)?.irPara(R.id.marcarFragment) }
     }
 
     override fun onStart() {
@@ -176,7 +178,11 @@ class MarcacoesAdapter(
     override fun onBindViewHolder(h: ViewHolder, pos: Int) {
         val m = lista[pos]
         val ctx = h.itemView.context
-        h.b.quando.text = ctx.getString(R.string.marcacao_quando, dataCurta(m.inicio), horaCurta(m.inicio))
+        val (dia, mes) = diaEMes(m.inicio, ctx.resources.configuration.locales[0])
+        h.b.dia.text = dia
+        h.b.mes.text = mes
+        h.b.quando.text = horaCurta(m.inicio)
+        h.b.quando.contentDescription = ctx.getString(R.string.marcacao_quando, dataCurta(m.inicio), horaCurta(m.inicio))
         val servico = ctx.getString(R.string.marcacao_com, m.servicoNome, m.barbeiroNome)
         h.b.servicoBarbeiro.text = m.paraNome?.let { ctx.getString(R.string.marcacao_para, it) + " · " + servico } ?: servico
         h.b.estado.text = rotuloEstado(ctx, m.estado)

@@ -157,4 +157,9 @@
         <item>1 hora antes</item>
         <item>2 horas antes</item>
     </string-array>
+    <!-- Ecrãs redesenhados (2026-11-24) -->
+    <string name="servicos_subtitulo">Escolhe o serviço e marca em segundos.</string>
+    <string name="servico_marcar">Marcar</string>
+    <string name="equipa_subtitulo">Conhece quem te vai atender.</string>
+    <string name="marcacoes_marcar_agora">Marcar agora</string>
 </resources>

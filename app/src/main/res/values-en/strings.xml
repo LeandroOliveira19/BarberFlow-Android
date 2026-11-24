@@ -143,4 +143,9 @@
         <item>1 hour before</item>
         <item>2 hours before</item>
     </string-array>
+    <!-- Redesigned screens (2026-11-24) -->
+    <string name="servicos_subtitulo">Pick a service and book in seconds.</string>
+    <string name="servico_marcar">Book</string>
+    <string name="equipa_subtitulo">Meet the people who will look after you.</string>
+    <string name="marcacoes_marcar_agora">Book now</string>
 </resources>

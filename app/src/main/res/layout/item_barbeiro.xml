@@ -1,43 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Card de um barbeiro: foto em todo o card, degradê escuro em baixo e o nome por cima; sem foto, as iniciais em Cinzel -->
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/BarberFlow.Cartao"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="230dp"
     android:layout_margin="6dp"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    app:rippleColor="@color/bf_dourado_suave">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/foto"
             android:layout_width="match_parent"
-            android:layout_height="160dp"
-            android:background="@color/bf_superficie_alta"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_iniciais"
             android:contentDescription="@string/foto_barbeiro"
             android:scaleType="centerCrop" />
 
         <TextView
-            android:id="@+id/nome"
-            android:layout_width="match_parent"
+            android:id="@+id/iniciais"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="12dp"
-            android:paddingTop="10dp"
-            android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
-            android:textColor="@color/bf_texto" />
-
-        <TextView
-            android:id="@+id/especialidades"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:paddingHorizontal="12dp"
-            android:paddingBottom="12dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="36dp"
+            android:fontFamily="@font/cinzel_semibold"
+            android:importantForAccessibility="no"
             android:textColor="@color/bf_dourado"
-            android:textSize="12sp" />
-    </LinearLayout>
+            android:textSize="44sp"
+            android:visibility="gone" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/bg_degrade_foto" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="vertical"
+            android:padding="14dp">
+
+            <TextView
+                android:id="@+id/nome"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textColor="@color/bf_texto" />
+
+            <TextView
+                android:id="@+id/especialidades"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textAppearance="?attr/textAppearanceLabelMedium"
+                android:textColor="@color/bf_dourado" />
+        </LinearLayout>
+    </FrameLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -16,14 +16,22 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="12dp">
+            android:padding="14dp">
 
-            <ImageView
-                android:id="@+id/iconeSessao"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:importantForAccessibility="no"
-                android:src="@drawable/ic_sessao_off" />
+            <FrameLayout
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:background="@drawable/bg_icone_servico">
+
+                <ImageView
+                    android:id="@+id/iconeSessao"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_sessao_off"
+                    android:tint="@color/bf_dourado" />
+            </FrameLayout>
 
             <TextView
                 android:id="@+id/textoSessao"
@@ -31,6 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="12dp"
                 android:layout_weight="1"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:textColor="@color/bf_texto" />
 
             <com.google.android.material.button.MaterialButton
@@ -59,15 +68,47 @@
                 android:paddingBottom="12dp" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-        <TextView
+        <!-- Sem marcações: ícone, texto e atalho para marcar -->
+        <LinearLayout
             android:id="@+id/vazio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:padding="24dp"
-            android:text="@string/marcacoes_vazio"
-            android:textAlignment="center"
-            android:textColor="@color/bf_texto_secundario"
-            android:visibility="gone" />
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="32dp"
+            android:visibility="gone">
+
+            <FrameLayout
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:background="@drawable/bg_icone_servico">
+
+                <ImageView
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_gravity="center"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_marcar"
+                    android:tint="@color/bf_dourado" />
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/marcacoes_vazio"
+                android:textAlignment="center"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                android:textColor="@color/bf_texto_secundario" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/botaoMarcarAgora"
+                android:layout_width="wrap_content"
+                android:layout_height="52dp"
+                android:layout_marginTop="20dp"
+                android:paddingHorizontal="28dp"
+                android:text="@string/marcacoes_marcar_agora" />
+        </LinearLayout>
     </FrameLayout>
 </LinearLayout>

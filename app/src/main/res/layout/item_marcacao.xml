@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Uma marcação: bloco de data (dia e mês) à esquerda, hora e serviço ao centro, estado em pílula; ações por baixo -->
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/BarberFlow.Cartao"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp">
+    android:layout_marginBottom="10dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,8 +20,37 @@
             android:orientation="horizontal">
 
             <LinearLayout
+                android:layout_width="58dp"
+                android:layout_height="62dp"
+                android:background="@drawable/bg_icone_servico"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/dia"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_bold"
+                    android:includeFontPadding="false"
+                    android:letterSpacing="-0.03"
+                    android:textColor="@color/bf_texto"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/mes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:fontFamily="@font/inter_semibold"
+                    android:letterSpacing="0.06"
+                    android:textColor="@color/bf_dourado"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="14dp"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
@@ -28,7 +58,7 @@
                     android:id="@+id/quando"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
                     android:textColor="@color/bf_texto" />
 
                 <TextView
@@ -36,6 +66,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
                     android:textColor="@color/bf_texto_secundario" />
             </LinearLayout>
 
@@ -44,10 +75,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_badge"
+                android:fontFamily="@font/inter_semibold"
                 android:paddingHorizontal="10dp"
                 android:paddingVertical="4dp"
-                android:textSize="12sp"
-                android:textStyle="bold" />
+                android:textSize="12sp" />
         </LinearLayout>
 
         <!-- Cancelar/remarcar: só numa marcação confirmada e dentro do prazo da barbearia -->
@@ -55,7 +86,7 @@
             android:id="@+id/acoes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="10dp"
             android:gravity="end"
             android:orientation="horizontal"
             android:visibility="gone"
@@ -66,13 +97,15 @@
                 style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/alterar_cancelar" />
+                android:text="@string/alterar_cancelar"
+                android:textColor="@color/bf_erro" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/botaoRemarcar"
-                style="@style/Widget.Material3.Button.TextButton"
+                style="@style/Widget.Material3.Button.TonalButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:text="@string/alterar_remarcar" />
         </LinearLayout>
 
@@ -80,7 +113,7 @@
             android:id="@+id/avisoAlterar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="10dp"
             android:text="@string/alterar_fora_prazo"
             android:textColor="@color/bf_texto_secundario"
             android:textSize="12sp"

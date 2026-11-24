@@ -16,7 +16,12 @@ import barberflow.cliente.dados.Resultado
 import barberflow.cliente.dados.api.dto.ServicoDto
 import barberflow.cliente.databinding.FragmentListaBinding
 import barberflow.cliente.databinding.ItemServicoBinding
+import androidx.recyclerview.widget.ConcatAdapter
+import barberflow.cliente.ui.CabecalhoAdapter
+import barberflow.cliente.ui.TipoServico
+import barberflow.cliente.ui.animarEntrada
 import barberflow.cliente.ui.aparecer
+import barberflow.cliente.ui.tipoServico
 import barberflow.cliente.ui.formatarDuracao
 import barberflow.cliente.ui.formatarPreco
 import barberflow.cliente.ui.mostrarErro
@@ -44,11 +49,12 @@ class ServicosFragment : Fragment(R.layout.fragment_lista) {
                 is Resultado.Ok -> {
                     b.vazio.setText(R.string.servicos_vazio)
                     b.vazio.isVisible = r.dados.isEmpty()
-                    b.lista.adapter = ServicosAdapter(r.dados) { s ->
-                        // Tocar num serviço abre o tab Marcar com esse serviço já escolhido
+                    val servicos = ServicosAdapter(r.dados) { s ->
+                        // Tocar num serviço (ou em "Marcar") abre o tab Marcar com esse serviço já escolhido
                         Repositorio.preSelecaoServico = s.id
                         (activity as? MainActivity)?.irPara(R.id.marcarFragment)
                     }
+                    b.lista.adapter = ConcatAdapter(CabecalhoAdapter(R.string.servicos_subtitulo), servicos)
                     b.lista.aparecer()
                 }
                 is Resultado.Erro -> mostrarErro(r.mensagem) { carregar() }
@@ -69,17 +75,39 @@ class ServicosAdapter(
 
     class ViewHolder(val b: ItemServicoBinding) : RecyclerView.ViewHolder(b.root)
 
+    /** Só os cards que aparecem pela primeira vez entram com animação (ao voltar a fazer scroll não se repete). */
+    private var ultimaAnimada = -1
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         ViewHolder(ItemServicoBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun onBindViewHolder(h: ViewHolder, pos: Int) {
         val s = lista[pos]
-        val ctx = h.itemView.context
         h.b.nome.text = s.nome
         h.b.descricao.text = s.descricao.orEmpty()
         h.b.descricao.isVisible = !s.descricao.isNullOrBlank()
-        h.b.duracaoPreco.text = ctx.getString(R.string.servico_duracao_preco, formatarDuracao(s.duracaoMinutos), formatarPreco(s.preco))
+        h.b.duracao.text = formatarDuracao(s.duracaoMinutos)
+        h.b.preco.text = formatarPreco(s.preco)
+        h.b.icone.setImageResource(iconeServico(tipoServico(s.nome)))
         h.b.root.setOnClickListener { aoTocar(s) }
+        h.b.botaoMarcar.setOnClickListener { aoTocar(s) }
+        h.b.botaoMarcar.contentDescription = h.itemView.context.getString(R.string.servico_marcar) + " " + s.nome
+        if (pos > ultimaAnimada) {
+            ultimaAnimada = pos
+            h.itemView.animarEntrada(pos)
+        } else {
+            h.itemView.alpha = 1f
+            h.itemView.translationY = 0f
+        }
+    }
+
+    /** Ícone de cada tipo de serviço (o tipo vem do nome, em tipoServico). */
+    private fun iconeServico(tipo: TipoServico) = when (tipo) {
+        TipoServico.CORTE -> R.drawable.ic_servicos
+        TipoServico.BARBA -> R.drawable.ic_barba
+        TipoServico.CORTE_E_BARBA -> R.drawable.ic_corte_barba
+        TipoServico.TRATAMENTO -> R.drawable.ic_tratamento
+        TipoServico.OUTRO -> R.drawable.ic_servicos
     }
 
     override fun getItemCount() = lista.size

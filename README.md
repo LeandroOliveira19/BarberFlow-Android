@@ -51,7 +51,7 @@ No separador Marcações, uma marcação confirmada mostra Cancelar e Remarcar a
 ## Testes
 
 ```bash
-./gradlew testLocalDebugUnitTest            # 62 testes JVM (DTOs/@SerializedName, erros, formatos, validação, fuso horário, prazo de cancelar/remarcar, efeito palavra a palavra)
+./gradlew testLocalDebugUnitTest            # 67 testes JVM (DTOs/@SerializedName, erros, formatos, validação, fuso horário, prazo de cancelar/remarcar, efeito palavra a palavra, apresentação dos ecrãs)
 ./gradlew connectedLocalDebugAndroidTest    # 3 testes do Room (precisa do emulador ligado)
 ```
 
