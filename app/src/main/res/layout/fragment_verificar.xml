@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -87,29 +88,82 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- Ecrã de sucesso (animado com AnimatorSet) -->
-    <LinearLayout
+    <!-- Ecrã de sucesso (animado com AnimatorSet): fumo dourado, ✓, resumo, calendário e "Ver as minhas marcações" -->
+    <FrameLayout
         android:id="@+id/sucesso"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/bf_fundo"
-        android:gravity="center"
-        android:orientation="vertical"
         android:visibility="gone">
 
-        <ImageView
-            android:id="@+id/iconeSucesso"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:importantForAccessibility="no"
-            android:src="@drawable/ic_check"
-            android:tint="@color/bf_sucesso" />
+        <barberflow.cliente.ui.GradienteAnimadoView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.7"
+            android:importantForAccessibility="no" />
 
-        <TextView
-            style="@style/BarberFlow.Titulo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/verificar_sucesso" />
-    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <FrameLayout
+                android:id="@+id/iconeSucesso"
+                android:layout_width="112dp"
+                android:layout_height="112dp"
+                android:background="@drawable/bg_pilula_dourada">
+
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_gravity="center"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_check"
+                    android:tint="@color/bf_dourado" />
+            </FrameLayout>
+
+            <TextView
+                style="@style/BarberFlow.Titulo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:text="@string/verificar_sucesso" />
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/BarberFlow.Cartao"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:id="@+id/resumoSucesso"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:lineSpacingExtra="4dp"
+                    android:padding="18dp"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:textColor="@color/bf_texto" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/botaoVerMarcacoes"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="24dp"
+                android:text="@string/verificar_ver_marcacoes" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/botaoCalendario"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/verificar_adicionar_calendario"
+                app:icon="@drawable/ic_marcar" />
+        </LinearLayout>
+    </FrameLayout>
 </FrameLayout>

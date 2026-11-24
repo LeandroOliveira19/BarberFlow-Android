@@ -148,4 +148,12 @@
     <string name="servico_marcar">Book</string>
     <string name="equipa_subtitulo">Meet the people who will look after you.</string>
     <string name="marcacoes_marcar_agora">Book now</string>
+    <string name="marcar_outra_data">Other date</string>
+    <string name="marcar_manha">Morning</string>
+    <string name="marcar_tarde">Afternoon</string>
+    <string name="marcar_dia_fechado">%1$s, closed</string>
+    <string name="verificar_resumo">%1$s with %2$s\n%3$s at %4$s</string>
+    <string name="verificar_adicionar_calendario">Add to calendar</string>
+    <string name="verificar_ver_marcacoes">See my bookings</string>
+    <string name="verificar_evento_titulo">%1$s · %2$s</string>
 </resources>

@@ -1,12 +1,8 @@
 package barberflow.cliente.ui.marcar
 
-import android.animation.ObjectAnimator
-import android.animation.PropertyValuesHolder
 import android.app.DatePickerDialog
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.os.bundleOf
@@ -15,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
 import barberflow.cliente.R
 import barberflow.cliente.dados.Repositorio
 import barberflow.cliente.dados.Resultado
@@ -24,7 +20,6 @@ import barberflow.cliente.dados.api.dto.BarbeiroDto
 import barberflow.cliente.dados.api.dto.ServicoDto
 import barberflow.cliente.dados.local.MarcacaoLocal
 import barberflow.cliente.databinding.FragmentMarcarBinding
-import barberflow.cliente.databinding.ItemSlotBinding
 import barberflow.cliente.tarefas.Eventos
 import barberflow.cliente.tarefas.LISBOA
 import barberflow.cliente.tarefas.dataCurta
@@ -60,6 +55,7 @@ class MarcarFragment : Fragment(R.layout.fragment_marcar) {
     private var hora: String? = null
     private var slotsJob: Job? = null
     private var chaveCarregada: String? = null
+    private var diasAdapter: DiasAdapter? = null
 
     /** Modo remarcar: a marcação confirmada que se está a mudar (null = marcação nova). */
     private var remarcando: MarcacaoLocal? = null
@@ -84,7 +80,7 @@ class MarcarFragment : Fragment(R.layout.fragment_marcar) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         _b = FragmentMarcarBinding.bind(view)
         b.listaSlots.layoutManager = GridLayoutManager(requireContext(), resources.getInteger(R.integer.colunas_slots))
-        b.botaoDia.setOnClickListener { escolherDia() }
+        b.listaDias.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         b.botaoContinuar.setOnClickListener { continuar() }
         b.botaoDesistir.setOnClickListener { sairDeRemarcar(irParaMarcacoes = true) }
         chaveCarregada = null
@@ -109,7 +105,8 @@ class MarcarFragment : Fragment(R.layout.fragment_marcar) {
     private fun sairDeRemarcar(irParaMarcacoes: Boolean) {
         remarcando = null; remarcarId = -1; dia = null; hora = null
         if (_b == null) return
-        b.botaoDia.setText(R.string.marcar_escolher_dia)
+        b.textoDia.setText(R.string.marcar_escolher_dia)
+        diasAdapter?.selecionar(null)
         b.listaSlots.adapter = null
         mostrarModo()
         atualizarContinuar()
@@ -152,6 +149,7 @@ class MarcarFragment : Fragment(R.layout.fragment_marcar) {
             servicos = (s1 as Resultado.Ok).dados
             barbeiros = (e1 as Resultado.Ok).dados
             preencherSpinners()
+            montarCarrossel()
             atualizarBotaoDia()
             if (dia != null) carregarSlots()
         }
@@ -186,6 +184,28 @@ class MarcarFragment : Fragment(R.layout.fragment_marcar) {
         carregarFoto(b.fotoBarbeiro, barbeiros.getOrNull(b.spinnerBarbeiro.selectedItemPosition)?.fotoUrl)
     }
 
+    /** Carrossel com todos os dias em que se pode marcar (de hoje até max_dias); os fechados ficam desligados. */
+    private fun montarCarrossel() {
+        val bb = barbearia ?: return
+        val adapter = DiasAdapter(
+            diasCarrossel(LocalDate.now(LISBOA), bb.maxDias, bb.diasFuncionamento), dia,
+            aoEscolher = { escolherData(it) },
+            aoOutraData = { escolherDia() },
+        )
+        diasAdapter = adapter
+        b.listaDias.adapter = adapter
+        adapter.selecionar(dia).takeIf { it >= 0 }?.let { b.listaDias.scrollToPosition(it) }
+    }
+
+    private fun escolherData(escolhido: LocalDate) {
+        dia = escolhido
+        hora = null
+        diasAdapter?.selecionar(escolhido)?.takeIf { it >= 0 }?.let { b.listaDias.smoothScrollToPosition(it) }
+        atualizarBotaoDia()
+        carregarSlots()
+    }
+
+    /** "Outra data" no fim do carrossel: o DatePickerDialog, limitado aos dias em que se pode marcar. */
     private fun escolherDia() {
         val bb = barbearia ?: return
         val hoje = LocalDate.now(LISBOA)
@@ -196,10 +216,7 @@ class MarcarFragment : Fragment(R.layout.fragment_marcar) {
                 mostrarErro(getString(R.string.marcar_fechado))
                 return@DatePickerDialog
             }
-            dia = escolhido
-            hora = null
-            atualizarBotaoDia()
-            carregarSlots()
+            escolherData(escolhido)
         }, atual.year, atual.monthValue - 1, atual.dayOfMonth)
         dlg.datePicker.minDate = hoje.atStartOfDay(LISBOA).toInstant().toEpochMilli()
         dlg.datePicker.maxDate = hoje.plusDays(bb.maxDias.toLong()).atStartOfDay(LISBOA).toInstant().toEpochMilli()
@@ -208,7 +225,7 @@ class MarcarFragment : Fragment(R.layout.fragment_marcar) {
 
     private fun atualizarBotaoDia() {
         val d = dia ?: return
-        b.botaoDia.text = d.format(DateTimeFormatter.ofPattern("EEEE, d 'de' MMMM", Locale.forLanguageTag("pt-PT")))
+        b.textoDia.text = d.format(DateTimeFormatter.ofPattern("EEEE, d 'de' MMMM", Locale.forLanguageTag("pt-PT")))
             .replaceFirstChar { it.uppercase() }
     }
 
@@ -239,7 +256,9 @@ class MarcarFragment : Fragment(R.layout.fragment_marcar) {
                     if (hora !in r.dados.slots) hora = null
                     b.semHorarios.setText(R.string.marcar_sem_horarios)
                     b.semHorarios.isVisible = r.dados.slots.isEmpty()
-                    b.listaSlots.adapter = SlotsAdapter(r.dados.slots, hora) { h -> hora = h; atualizarContinuar() }
+                    val slots = SlotsAdapter(r.dados.slots, hora) { h -> hora = h; atualizarContinuar() }
+                    slots.configurarGrelha(b.listaSlots.layoutManager as GridLayoutManager)
+                    b.listaSlots.adapter = slots
                     atualizarContinuar()
                 }
                 is Resultado.Erro -> mostrarErro(r.mensagem) { carregarSlots() }
@@ -296,46 +315,9 @@ class MarcarFragment : Fragment(R.layout.fragment_marcar) {
     }
 
     override fun onDestroyView() {
+        diasAdapter = null
         _b = null
         super.onDestroyView()
     }
 }
 
-/** Grelha de horários; o selecionado fica dourado e "pulsa" (ObjectAnimator). */
-class SlotsAdapter(
-    private val slots: List<String>,
-    private var selecionado: String?,
-    private val aoEscolher: (String) -> Unit,
-) : RecyclerView.Adapter<SlotsAdapter.ViewHolder>() {
-
-    class ViewHolder(val b: ItemSlotBinding) : RecyclerView.ViewHolder(b.root)
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        ViewHolder(ItemSlotBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-
-    override fun onBindViewHolder(h: ViewHolder, pos: Int) {
-        val hora = slots[pos]
-        val ativo = hora == selecionado
-        h.b.hora.text = hora
-        h.b.hora.isSelected = ativo
-        h.b.hora.setTextColor(h.itemView.context.getColor(if (ativo) R.color.bf_preto else R.color.bf_texto))
-        h.b.root.setOnClickListener {
-            val anterior = slots.indexOf(selecionado)
-            selecionado = hora
-            if (anterior >= 0) notifyItemChanged(anterior)
-            notifyItemChanged(h.bindingAdapterPosition)
-            pulsar(h.b.root)
-            aoEscolher(hora)
-        }
-    }
-
-    private fun pulsar(v: View) {
-        ObjectAnimator.ofPropertyValuesHolder(
-            v,
-            PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, 1.12f, 1f),
-            PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 1.12f, 1f),
-        ).setDuration(220).start()
-    }
-
-    override fun getItemCount() = slots.size
-}

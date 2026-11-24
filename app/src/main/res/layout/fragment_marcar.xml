@@ -127,14 +127,24 @@
                             android:textAppearance="?attr/textAppearanceLabelMedium"
                             android:textColor="@color/bf_texto_secundario" />
 
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/botaoDia"
-                            style="@style/Widget.Material3.Button.OutlinedButton"
+                        <!-- Carrossel de dias (os fechados ficam desligados); o último abre o calendário -->
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/listaDias"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="6dp"
+                            android:layout_marginTop="10dp"
+                            android:clipToPadding="false"
+                            android:orientation="horizontal"
+                            android:overScrollMode="never" />
+
+                        <TextView
+                            android:id="@+id/textoDia"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
                             android:text="@string/marcar_escolher_dia"
-                            app:icon="@drawable/ic_marcar" />
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
+                            android:textColor="@color/bf_texto_secundario" />
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

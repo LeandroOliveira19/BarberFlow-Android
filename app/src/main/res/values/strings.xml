@@ -162,4 +162,12 @@
     <string name="servico_marcar">Marcar</string>
     <string name="equipa_subtitulo">Conhece quem te vai atender.</string>
     <string name="marcacoes_marcar_agora">Marcar agora</string>
+    <string name="marcar_outra_data">Outra data</string>
+    <string name="marcar_manha">Manhã</string>
+    <string name="marcar_tarde">Tarde</string>
+    <string name="marcar_dia_fechado">%1$s, fechado</string>
+    <string name="verificar_resumo">%1$s com %2$s\n%3$s às %4$s</string>
+    <string name="verificar_adicionar_calendario">Adicionar ao calendário</string>
+    <string name="verificar_ver_marcacoes">Ver as minhas marcações</string>
+    <string name="verificar_evento_titulo">%1$s · %2$s</string>
 </resources>

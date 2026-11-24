@@ -184,7 +184,9 @@
         <item name="boxCornerRadiusTopEnd">14dp</item>
         <item name="boxCornerRadiusBottomStart">14dp</item>
         <item name="boxCornerRadiusBottomEnd">14dp</item>
-        <item name="boxStrokeColor">@color/bf_dourado</item>
+        <item name="boxStrokeColor">@color/bf_campo_contorno</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxStrokeWidthFocused">2dp</item>
         <item name="hintTextColor">@color/bf_dourado</item>
     </style>
     <style name="BarberFlow.Forma.Campo" parent="ShapeAppearance.Material3.Corner.Small">

@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.provider.CalendarContract
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
@@ -17,12 +18,15 @@ import androidx.navigation.fragment.findNavController
 import barberflow.cliente.R
 import barberflow.cliente.dados.Repositorio
 import barberflow.cliente.dados.Resultado
+import barberflow.cliente.dados.local.MarcacaoLocal
 import barberflow.cliente.dados.resumoConfirmado
 import barberflow.cliente.databinding.FragmentVerificarBinding
 import barberflow.cliente.tarefas.Agendador
 import barberflow.cliente.tarefas.Eventos
 import barberflow.cliente.tarefas.Lembretes
 import barberflow.cliente.tarefas.Notificacoes
+import barberflow.cliente.tarefas.dataCurta
+import barberflow.cliente.tarefas.horaCurta
 import barberflow.cliente.tarefas.paraEpochMillis
 import barberflow.cliente.ui.MainActivity
 import barberflow.cliente.ui.abrir
@@ -30,7 +34,6 @@ import barberflow.cliente.ui.mostrarErro
 import barberflow.cliente.ui.quandoVisivel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /** Passo 3: o cliente escreve o código recebido por email; a API devolve o token da marcação. */
@@ -186,7 +189,10 @@ class VerificarFragment : Fragment(R.layout.fragment_verificar) {
         }
     }
 
-    /** AnimatorSet: o ✓ aparece com fade + escala; depois segue (só se o ecrã estiver visível). */
+    /**
+     * AnimatorSet: o ✓ aparece com fade + escala. O ecrã fica com o resumo da marcação, "Adicionar ao calendário"
+     * (Intent implícito) e "Ver as minhas marcações" (que pede a permissão de notificações e segue).
+     */
     private fun animarSucesso() {
         b.sucesso.alpha = 0f
         b.sucesso.isVisible = true
@@ -201,10 +207,26 @@ class VerificarFragment : Fragment(R.layout.fragment_verificar) {
             duration = 450
             start()
         }
+        b.botaoVerMarcacoes.setOnClickListener { pedirPermissaoOuSeguir() }
+        b.botaoCalendario.isVisible = false
         viewLifecycleOwner.lifecycleScope.launch {
-            delay(1200)
-            quandoVisivel { pedirPermissaoOuSeguir() }
+            val m = Repositorio.dao.obter(marcacaoId) ?: return@launch
+            if (_b == null) return@launch
+            b.resumoSucesso.text = getString(R.string.verificar_resumo, m.servicoNome, m.barbeiroNome, dataCurta(m.inicio), horaCurta(m.inicio))
+            b.botaoCalendario.isVisible = true
+            b.botaoCalendario.setOnClickListener { adicionarAoCalendario(m) }
         }
+    }
+
+    /** Intent implícito: abre a app de calendário com o evento já preenchido (o utilizador confirma lá). */
+    private fun adicionarAoCalendario(m: MarcacaoLocal) {
+        val barbearia = prefs.barbeariaNome.orEmpty()
+        val intent = Intent(Intent.ACTION_INSERT, CalendarContract.Events.CONTENT_URI)
+            .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, paraEpochMillis(m.inicio))
+            .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, paraEpochMillis(m.fim))
+            .putExtra(CalendarContract.Events.TITLE, getString(R.string.verificar_evento_titulo, m.servicoNome, barbearia))
+            .putExtra(CalendarContract.Events.DESCRIPTION, getString(R.string.marcacao_com, m.servicoNome, m.barbeiroNome))
+        requireContext().abrir(intent)
     }
 
     private fun pedirPermissaoOuSeguir() {

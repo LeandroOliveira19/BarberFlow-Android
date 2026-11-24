@@ -51,7 +51,7 @@ No separador Marcações, uma marcação confirmada mostra Cancelar e Remarcar a
 ## Testes
 
 ```bash
-./gradlew testLocalDebugUnitTest            # 67 testes JVM (DTOs/@SerializedName, erros, formatos, validação, fuso horário, prazo de cancelar/remarcar, efeito palavra a palavra, apresentação dos ecrãs)
+./gradlew testLocalDebugUnitTest            # 72 testes JVM (DTOs/@SerializedName, erros, formatos, validação, fuso horário, prazo de cancelar/remarcar, efeito palavra a palavra, apresentação dos ecrãs, carrossel de dias e manhã/tarde)
 ./gradlew connectedLocalDebugAndroidTest    # 3 testes do Room (precisa do emulador ligado)
 ```
 
@@ -61,10 +61,10 @@ No separador Marcações, uma marcação confirmada mostra Cancelar e Remarcar a
 |---|---|
 | ViewBinding (Activity `by lazy` / Fragment `bind`) | `ui/MainActivity.kt`, todos os `*Fragment.kt` |
 | BottomNavigationView + Fragments + NavController | `ui/MainActivity.kt`, `res/navigation/nav_graph.xml`, `res/menu/menu_inferior.xml` |
-| Intent explícito / implícito (DIAL, SENDTO, VIEW, deep link) | `ui/OnboardingActivity.kt`, `ui/inicio/InicioFragment.kt`, `ui/equipa/BarbeiroDetalheFragment.kt` |
+| Intent explícito / implícito (DIAL, SENDTO, VIEW, INSERT no calendário, deep link) | `ui/OnboardingActivity.kt`, `ui/inicio/InicioFragment.kt`, `ui/equipa/BarbeiroDetalheFragment.kt`, `ui/marcar/VerificarFragment.kt` (adicionar ao calendário) |
 | RecyclerView + Adapter + ViewHolder (Linear e Grid) | `ui/servicos`, `ui/equipa`, `ui/marcar/MarcarFragment.kt` (SlotsAdapter), `ui/marcacoes` |
 | Spinner + onItemSelectedListener + setImageResource | `ui/marcar/MarcarFragment.kt`, `ui/inicio/InicioFragment.kt` |
-| DatePickerDialog | `ui/marcar/MarcarFragment.kt` |
+| DatePickerDialog | `ui/marcar/MarcarFragment.kt` ("Outra data" no fim do carrossel de dias) |
 | Retrofit + Gson + `@SerializedName` + `suspend`/`lifecycleScope` | `dados/api/*`, `dados/Repositorio.kt` |
 | Glide | `ui/equipa/EquipaFragment.kt` (`carregarFoto`) |
 | ConnectivityManager | `dados/Rede.kt` |
