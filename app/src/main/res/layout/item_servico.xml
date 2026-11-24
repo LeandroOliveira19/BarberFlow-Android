@@ -38,9 +38,10 @@
                 android:id="@+id/duracaoPreco"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:textColor="@color/bf_dourado"
-                android:textStyle="bold" />
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/inter_semibold"
+                android:textColor="@color/bf_texto"
+                android:textSize="15sp" />
         </LinearLayout>
 
         <ImageView

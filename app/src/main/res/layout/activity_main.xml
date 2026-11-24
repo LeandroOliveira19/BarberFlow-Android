@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/bf_fundo"
-        app:titleTextColor="@color/bf_dourado" />
+        />
 
     <!-- Placeholder onde o NavHostFragment troca os Fragments -->
     <androidx.fragment.app.FragmentContainerView

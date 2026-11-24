@@ -51,7 +51,7 @@ No separador Marcações, uma marcação confirmada mostra Cancelar e Remarcar a
 ## Testes
 
 ```bash
-./gradlew testLocalDebugUnitTest            # 55 testes JVM (DTOs/@SerializedName, erros, formatos, validação, fuso horário, prazo de cancelar/remarcar)
+./gradlew testLocalDebugUnitTest            # 62 testes JVM (DTOs/@SerializedName, erros, formatos, validação, fuso horário, prazo de cancelar/remarcar, efeito palavra a palavra)
 ./gradlew connectedLocalDebugAndroidTest    # 3 testes do Room (precisa do emulador ligado)
 ```
 
@@ -75,5 +75,18 @@ No separador Marcações, uma marcação confirmada mostra Cancelar e Remarcar a
 | AlarmManager (exato / setWindow / execução única) | `tarefas/Lembretes.kt` |
 | WorkManager (periódico, Constraints, unique work) | `tarefas/SincronizarWorker.kt` |
 | Notificações (canal, PendingIntent IMMUTABLE, POST_NOTIFICATIONS runtime) | `tarefas/Notificacoes.kt`, `ui/marcar/VerificarFragment.kt` |
-| Animações (animate, ObjectAnimator, AnimatorSet, shared element) | `ui/Ui.kt`, `MarcarFragment` (slots), `VerificarFragment` (✓), Equipa → detalhe |
+| Animações (animate, ObjectAnimator, AnimatorSet, ValueAnimator, shared element) | `ui/Ui.kt`, `MarcarFragment` (slots), `VerificarFragment` (✓), Equipa → detalhe, `ui/Efeitos.kt` (palavra a palavra) |
+| Vista própria (Canvas, RadialGradient) | `ui/GradienteAnimadoView.kt` (fumo dourado do Início, parado se as animações do sistema estiverem desligadas) |
+| Tema, estilos e fontes em `res/font` | `res/values/themes.xml`, `res/values/colors.xml`, `res/font/` (o mesmo visual do site e da gestão) |
 | i18n e qualificadores | `res/values` (PT), `res/values-en`, `res/values-land/integers.xml` |
+
+## Visual e créditos
+
+A app usa o mesmo visual do site (tema Clássico) e da gestão do BarberFlow:
+- preto, branco-pérola (`#F5F5F7`) e dourado (`#CDA47C`);
+- cantos de 24dp e botões em pílula;
+- fumo dourado animado e texto palavra a palavra no Início.
+
+Fontes incluídas em `app/src/main/res/font/`, ambas sob a [SIL Open Font License 1.1](https://openfontlicense.org), descarregadas do Google Fonts:
+- **Inter**, de Rasmus Andersson;
+- **Cinzel**, de Natanael Gama.

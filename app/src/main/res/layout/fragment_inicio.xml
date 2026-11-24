@@ -14,9 +14,9 @@
             android:id="@+id/saudacao"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:textColor="@color/bf_texto_secundario"
-            android:textSize="16sp"
+            android:layout_marginBottom="12dp"
+            android:textAppearance="?attr/textAppearanceHeadlineSmall"
+            android:textColor="@color/bf_texto"
             android:visibility="gone" />
 
         <com.google.android.material.card.MaterialCardView
@@ -24,11 +24,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <!-- Fumo dourado animado por trás do card (o mesmo efeito do topo do site) -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <barberflow.cliente.ui.GradienteAnimadoView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:importantForAccessibility="no" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:padding="24dp">
 
                 <TextView
                     android:id="@+id/nomeBarbearia"
@@ -100,6 +110,7 @@
                         app:icon="@drawable/ic_mapa" />
                 </LinearLayout>
             </LinearLayout>
+            </FrameLayout>
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
@@ -152,8 +163,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:text="@string/inicio_reviews"
-            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
-            android:textColor="@color/bf_dourado" />
+            android:textAppearance="?attr/textAppearanceTitleLarge"
+            android:textColor="@color/bf_texto" />
 
         <ProgressBar
             android:id="@+id/progresso"

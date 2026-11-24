@@ -28,7 +28,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/campoNome"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            style="@style/BarberFlow.Campo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -44,7 +44,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/campoParaNome"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            style="@style/BarberFlow.Campo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -61,7 +61,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/campoTelemovel"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            style="@style/BarberFlow.Campo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -78,7 +78,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/campoEmail"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            style="@style/BarberFlow.Campo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"

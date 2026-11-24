@@ -26,6 +26,7 @@ import barberflow.cliente.tarefas.Eventos
 import barberflow.cliente.tarefas.Notificacoes
 import barberflow.cliente.ui.OnboardingActivity
 import barberflow.cliente.ui.abrir
+import barberflow.cliente.ui.animarPalavras
 import barberflow.cliente.ui.mostrarErro
 import kotlinx.coroutines.launch
 
@@ -43,7 +44,8 @@ class InicioFragment : Fragment(R.layout.fragment_inicio) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         _b = FragmentInicioBinding.bind(view)
         b.listaReviews.layoutManager = LinearLayoutManager(requireContext())
-        b.nomeBarbearia.text = prefs.barbeariaNome
+        // Nome da barbearia em Cinzel, a entrar palavra a palavra (como o topo do site)
+        b.nomeBarbearia.animarPalavras(prefs.barbeariaNome.orEmpty())
         configurarSpinnerLembrete()
         // Num APK próprio de uma barbearia não faz sentido mudar de barbearia
         b.botaoMudarBarbearia.isVisible = BuildConfig.SLUG_FIXO.isBlank()
@@ -87,7 +89,7 @@ class InicioFragment : Fragment(R.layout.fragment_inicio) {
         if (_b == null) return
         prefs.barbeariaNome = d.nome
         (activity as? AppCompatActivity)?.supportActionBar?.title = d.nome
-        b.nomeBarbearia.text = d.nome
+        if (b.nomeBarbearia.text.toString() != d.nome) b.nomeBarbearia.animarPalavras(d.nome)
         b.morada.text = d.morada.orEmpty()
         b.morada.isVisible = !d.morada.isNullOrBlank()
         if (d.horaAbertura != null && d.horaFecho != null) {
@@ -136,7 +138,8 @@ class InicioFragment : Fragment(R.layout.fragment_inicio) {
         if (_b == null) return
         val nome = prefs.clienteNome
         b.saudacao.isVisible = prefs.sessaoAtiva && !nome.isNullOrBlank()
-        b.saudacao.text = getString(R.string.inicio_ola, nome?.substringBefore(' ').orEmpty())
+        val texto = getString(R.string.inicio_ola, nome?.substringBefore(' ').orEmpty())
+        if (b.saudacao.isVisible && b.saudacao.text.toString() != texto) b.saudacao.animarPalavras(texto) else b.saudacao.text = texto
     }
 
     private fun atualizarAvisoNotificacoes() {

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Tema da app: o mesmo visual do site (Clássico) e da gestão — preto, branco-pérola, dourado, Inter e Cinzel -->
     <style name="Theme.BarberFlow" parent="Theme.Material3.Dark.NoActionBar">
         <item name="colorPrimary">@color/bf_dourado</item>
         <item name="colorOnPrimary">@color/bf_preto</item>
@@ -14,24 +15,195 @@
         <item name="colorSurfaceContainer">@color/bf_superficie</item>
         <item name="colorSurfaceContainerLow">@color/bf_superficie</item>
         <item name="colorSurfaceContainerHigh">@color/bf_superficie_alta</item>
+        <item name="colorSurfaceContainerHighest">@color/bf_superficie_alta</item>
         <item name="colorOnSurface">@color/bf_texto</item>
         <item name="colorOnSurfaceVariant">@color/bf_texto_secundario</item>
-        <item name="colorOutline">@color/bf_contorno</item>
+        <item name="colorOutline">@color/bf_contorno_forte</item>
+        <item name="colorOutlineVariant">@color/bf_contorno</item>
         <item name="colorError">@color/bf_erro</item>
+        <item name="colorControlNormal">@color/bf_texto_secundario</item>
+        <item name="colorControlActivated">@color/bf_dourado</item>
         <item name="android:windowBackground">@color/bf_fundo</item>
         <item name="android:statusBarColor">@color/bf_fundo</item>
         <item name="android:navigationBarColor">@color/bf_superficie</item>
+
+        <!-- Letra: Inter em toda a app (Cinzel só na marca, em BarberFlow.Titulo).
+             Vai nas aparências de texto base (e não em android:fontFamily do tema, que passaria por cima dos pesos de cada estilo). -->
+        <item name="android:textAppearance">@style/BarberFlow.Texto.Base</item>
+        <item name="android:textAppearanceSmall">@style/BarberFlow.Texto.Base.Pequeno</item>
+        <item name="android:textAppearanceMedium">@style/BarberFlow.Texto.Base.Medio</item>
+        <item name="android:textAppearanceLarge">@style/BarberFlow.Texto.Base.Grande</item>
+        <item name="android:textAppearanceListItem">@style/BarberFlow.Texto.Base.Medio</item>
+        <item name="android:textAppearanceListItemSmall">@style/BarberFlow.Texto.Base.Pequeno</item>
+        <item name="textAppearanceDisplaySmall">@style/BarberFlow.Texto.Display</item>
+        <item name="textAppearanceHeadlineLarge">@style/BarberFlow.Texto.Headline</item>
+        <item name="textAppearanceHeadlineMedium">@style/BarberFlow.Texto.Headline</item>
+        <item name="textAppearanceHeadlineSmall">@style/BarberFlow.Texto.HeadlineSmall</item>
+        <item name="textAppearanceTitleLarge">@style/BarberFlow.Texto.TitleLarge</item>
+        <item name="textAppearanceTitleMedium">@style/BarberFlow.Texto.TitleMedium</item>
+        <item name="textAppearanceTitleSmall">@style/BarberFlow.Texto.TitleSmall</item>
+        <item name="textAppearanceBodyLarge">@style/BarberFlow.Texto.BodyLarge</item>
+        <item name="textAppearanceBodyMedium">@style/BarberFlow.Texto.BodyMedium</item>
+        <item name="textAppearanceBodySmall">@style/BarberFlow.Texto.BodySmall</item>
+        <item name="textAppearanceLabelLarge">@style/BarberFlow.Texto.LabelLarge</item>
+        <item name="textAppearanceLabelMedium">@style/BarberFlow.Texto.LabelMedium</item>
+        <item name="textAppearanceLabelSmall">@style/BarberFlow.Texto.LabelSmall</item>
+
+        <!-- Componentes -->
+        <item name="toolbarStyle">@style/BarberFlow.Toolbar</item>
+        <item name="bottomNavigationStyle">@style/BarberFlow.NavInferior</item>
+        <item name="textInputStyle">@style/BarberFlow.Campo</item>
+        <item name="materialCardViewStyle">@style/BarberFlow.Cartao</item>
+        <item name="snackbarStyle">@style/BarberFlow.Aviso</item>
+        <item name="snackbarTextViewStyle">@style/BarberFlow.Aviso.Texto</item>
+        <item name="shapeAppearanceCornerSmall">@style/BarberFlow.Forma.Campo</item>
     </style>
 
+    <!-- Texto base (TextView sem aparência própria, listas, spinner) -->
+    <style name="BarberFlow.Texto.Base" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/inter</item>
+        <item name="fontFamily">@font/inter</item>
+    </style>
+    <style name="BarberFlow.Texto.Base.Pequeno" parent="TextAppearance.AppCompat.Small">
+        <item name="android:fontFamily">@font/inter</item>
+        <item name="fontFamily">@font/inter</item>
+    </style>
+    <style name="BarberFlow.Texto.Base.Medio" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:fontFamily">@font/inter</item>
+        <item name="fontFamily">@font/inter</item>
+    </style>
+    <style name="BarberFlow.Texto.Base.Grande" parent="TextAppearance.AppCompat.Large">
+        <item name="android:fontFamily">@font/inter</item>
+        <item name="fontFamily">@font/inter</item>
+    </style>
+
+    <!-- Tipografia (Inter): títulos grandes e apertados, como no site e na gestão -->
+    <style name="BarberFlow.Texto.Display" parent="TextAppearance.Material3.DisplaySmall">
+        <item name="fontFamily">@font/inter_bold</item>
+        <item name="android:fontFamily">@font/inter_bold</item>
+        <item name="android:letterSpacing">-0.03</item>
+    </style>
+    <style name="BarberFlow.Texto.Headline" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="fontFamily">@font/inter_bold</item>
+        <item name="android:fontFamily">@font/inter_bold</item>
+        <item name="android:letterSpacing">-0.025</item>
+    </style>
+    <style name="BarberFlow.Texto.HeadlineSmall" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="fontFamily">@font/inter_bold</item>
+        <item name="android:fontFamily">@font/inter_bold</item>
+        <item name="android:letterSpacing">-0.02</item>
+    </style>
+    <style name="BarberFlow.Texto.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
+        <item name="fontFamily">@font/inter_semibold</item>
+        <item name="android:fontFamily">@font/inter_semibold</item>
+        <item name="android:letterSpacing">-0.015</item>
+    </style>
+    <style name="BarberFlow.Texto.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
+        <item name="fontFamily">@font/inter_semibold</item>
+        <item name="android:fontFamily">@font/inter_semibold</item>
+        <item name="android:letterSpacing">-0.01</item>
+    </style>
+    <style name="BarberFlow.Texto.TitleSmall" parent="TextAppearance.Material3.TitleSmall">
+        <item name="fontFamily">@font/inter_semibold</item>
+        <item name="android:fontFamily">@font/inter_semibold</item>
+    </style>
+    <style name="BarberFlow.Texto.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
+        <item name="fontFamily">@font/inter</item>
+        <item name="android:fontFamily">@font/inter</item>
+        <item name="android:letterSpacing">-0.01</item>
+    </style>
+    <style name="BarberFlow.Texto.BodyMedium" parent="TextAppearance.Material3.BodyMedium">
+        <item name="fontFamily">@font/inter</item>
+        <item name="android:fontFamily">@font/inter</item>
+        <item name="android:letterSpacing">-0.005</item>
+    </style>
+    <style name="BarberFlow.Texto.BodySmall" parent="TextAppearance.Material3.BodySmall">
+        <item name="fontFamily">@font/inter</item>
+        <item name="android:fontFamily">@font/inter</item>
+    </style>
+    <style name="BarberFlow.Texto.LabelLarge" parent="TextAppearance.Material3.LabelLarge">
+        <item name="fontFamily">@font/inter_medium</item>
+        <item name="android:fontFamily">@font/inter_medium</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+    <style name="BarberFlow.Texto.LabelMedium" parent="TextAppearance.Material3.LabelMedium">
+        <item name="fontFamily">@font/inter_medium</item>
+        <item name="android:fontFamily">@font/inter_medium</item>
+    </style>
+    <style name="BarberFlow.Texto.LabelSmall" parent="TextAppearance.Material3.LabelSmall">
+        <item name="fontFamily">@font/inter_medium</item>
+        <item name="android:fontFamily">@font/inter_medium</item>
+    </style>
+
+    <!-- Barra de cima: título grande, como os h1 da gestão -->
+    <style name="BarberFlow.Toolbar" parent="Widget.Material3.Toolbar">
+        <item name="titleTextAppearance">@style/BarberFlow.Toolbar.Titulo</item>
+        <item name="titleTextColor">@color/bf_texto</item>
+    </style>
+    <style name="BarberFlow.Toolbar.Titulo" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="fontFamily">@font/inter_bold</item>
+        <item name="android:fontFamily">@font/inter_bold</item>
+        <item name="android:textSize">26sp</item>
+        <item name="android:letterSpacing">-0.03</item>
+    </style>
+
+    <!-- Barra de baixo: dourado no separador ativo, cinzento nos outros -->
+    <style name="BarberFlow.NavInferior" parent="Widget.Material3.BottomNavigationView">
+        <item name="backgroundTint">@color/bf_superficie</item>
+        <item name="itemIconTint">@color/bf_nav_item</item>
+        <item name="itemTextColor">@color/bf_nav_item</item>
+        <item name="itemActiveIndicatorStyle">@style/BarberFlow.NavInferior.Indicador</item>
+        <item name="itemTextAppearanceActive">@style/BarberFlow.Texto.LabelMedium</item>
+        <item name="itemTextAppearanceInactive">@style/BarberFlow.Texto.LabelMedium</item>
+    </style>
+    <style name="BarberFlow.NavInferior.Indicador" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/bf_dourado_suave</item>
+    </style>
+
+    <!-- Título de marca: Cinzel dourado (nome da barbearia), como o logotipo do site -->
     <style name="BarberFlow.Titulo" parent="TextAppearance.Material3.HeadlineSmall">
         <item name="android:textColor">@color/bf_dourado</item>
-        <item name="android:fontFamily">serif</item>
+        <item name="fontFamily">@font/cinzel_semibold</item>
+        <item name="android:fontFamily">@font/cinzel_semibold</item>
+        <item name="android:letterSpacing">0.02</item>
     </style>
 
+    <!-- Cards: cantos grandes, contorno fino, sem sombra -->
     <style name="BarberFlow.Cartao" parent="Widget.Material3.CardView.Filled">
         <item name="cardBackgroundColor">@color/bf_superficie</item>
-        <item name="cardCornerRadius">14dp</item>
+        <item name="cardCornerRadius">24dp</item>
+        <item name="cardElevation">0dp</item>
         <item name="strokeColor">@color/bf_contorno</item>
         <item name="strokeWidth">1dp</item>
+    </style>
+
+    <!-- Campos de texto: contorno fino, cantos de 14dp, dourado ao escrever -->
+    <style name="BarberFlow.Campo" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxCornerRadiusTopStart">14dp</item>
+        <item name="boxCornerRadiusTopEnd">14dp</item>
+        <item name="boxCornerRadiusBottomStart">14dp</item>
+        <item name="boxCornerRadiusBottomEnd">14dp</item>
+        <item name="boxStrokeColor">@color/bf_dourado</item>
+        <item name="hintTextColor">@color/bf_dourado</item>
+    </style>
+    <style name="BarberFlow.Forma.Campo" parent="ShapeAppearance.Material3.Corner.Small">
+        <item name="cornerSize">14dp</item>
+    </style>
+
+    <!-- Avisos (Snackbar) em pílula de vidro escuro, como na gestão -->
+    <style name="BarberFlow.Aviso" parent="Widget.Material3.Snackbar">
+        <item name="backgroundTint">#EB28282A</item>
+        <item name="shapeAppearance">@style/BarberFlow.Forma.Pilula</item>
+    </style>
+    <style name="BarberFlow.Aviso.Texto" parent="Widget.Material3.Snackbar.TextView">
+        <item name="android:textColor">@color/bf_texto</item>
+    </style>
+    <style name="BarberFlow.Forma.Circulo" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+    <style name="BarberFlow.Forma.Pilula" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
     </style>
 </resources>
